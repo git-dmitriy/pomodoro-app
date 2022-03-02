@@ -6,14 +6,7 @@ export const tasksSlice = createSlice({
   initialState: [] as TaskItem[],
   reducers: {
     createTask: {
-      reducer(
-        state,
-        action: PayloadAction<{
-          id: string;
-          content: string;
-          isComplete: boolean;
-        }>
-      ) {
+      reducer(state, action: PayloadAction<TaskItem>) {
         state.push(action.payload);
       },
       prepare(content: string, isComplete: boolean) {
@@ -38,9 +31,12 @@ export const tasksSlice = createSlice({
         existingTask.isComplete = isComplete;
       }
     },
+    removeCompleteTasks: (state) =>
+      state.filter((task) => task.isComplete === false),
   },
 });
 
-export const { createTask, removeTask, updateTask } = tasksSlice.actions;
+export const { createTask, removeTask, updateTask, removeCompleteTasks } =
+  tasksSlice.actions;
 
 export default tasksSlice.reducer;
