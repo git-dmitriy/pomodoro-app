@@ -1,22 +1,33 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Timer } from './types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Config, Timer } from 'features/timer/types';
 
 export const timerSlice = createSlice({
   name: 'timer',
   initialState: {
     config: {
-      work: 25,
+      focus: 25,
       rest: 15,
       break: 5,
     },
-    session: 'work',
+    sessions: [
+      'focus',
+      'break',
+      'focus',
+      'break',
+      'focus',
+      'break',
+      'focus',
+      'rest',
+    ],
     time: 0,
-    completedSessions: 0,
+    currentSession: 0,
     isRunning: false,
     timerId: null,
+    completedCycles: 0,
   } as Timer,
+
   reducers: {
-    init: (state, action) => {
+    init: (state, action: PayloadAction<Config | null>) => {
       /*
         TODO:
           +* create time stamp
@@ -29,29 +40,24 @@ export const timerSlice = createSlice({
         state.config = action.payload;
       }
 
-      state.time = state.config[state.session] * 60;
+      state.time = state.config[state.sessions[state.currentSession]] * 60;
     },
 
     start: (state, action) => {
-      /* 
-        start timer;
-        ? Is this thing needed
-
-      */
       state.isRunning = true;
       state.timerId = action.payload;
     },
 
     tick: (state) => {
-      /* 
+      if (state.currentSession === state.sessions.length - 1) {
+        state.currentSession = 0;
+        state.completedCycles += 1;
+      }
 
-      TODO: 
-        * reduce seconds on tick
-        ! get timer id for aborting
-        * when the time runs out set completed session + 1
-        and change session to 'break'
-
-      */
+      if (state.time === 0) {
+        state.currentSession += 1;
+        state.time = state.config[state.sessions[state.currentSession]] * 60;
+      }
 
       state.time -= 1;
     },
@@ -59,7 +65,7 @@ export const timerSlice = createSlice({
     pause: (state) => {
       /* 
       TODO: abort setInterval
-      save quantity of seconds in time filed
+      save quantity of seconds in time field
       */
       state.timerId = null;
       state.isRunning = false;
@@ -68,6 +74,7 @@ export const timerSlice = createSlice({
     reset: (state) => {
       state.timerId = null;
       state.isRunning = false;
+      state.completedCycles = 0;
     },
 
     rest: (state) => {},
