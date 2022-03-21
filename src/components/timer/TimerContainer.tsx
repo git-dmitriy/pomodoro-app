@@ -1,12 +1,12 @@
+import { useState } from 'react';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 
 import { ClockDial } from 'components/timer/ClockDial';
 import { Controls } from 'components/timer/Controls';
 import { Sessinons } from 'components/timer/Sessions';
-import { useAppDispatch } from 'app/hooks';
-import { init } from 'features/timer/timerSlice';
-import { useLocalStorage } from 'components/hooks/useLocalsotrage';
+import { pause } from 'features/timer/timerSlice';
+import { Settings } from './Settings';
 
 const Container = styled.div`
   background-color: #d1d5db;
@@ -16,26 +16,24 @@ const Container = styled.div`
 
 export const TimerContainer = () => {
   const dispatch = useAppDispatch();
-  const [config, setConfig] = useLocalStorage('config', {
-    focus: 25,
-    rest: 15,
-    break: 5,
-  });
+  const [showSettings, setShowSettings] = useState(false);
+  const { isRunning, timerId } = useAppSelector((state) => state.timer);
 
-  useEffect(() => {
-    setConfig({
-      focus: 0.1,
-      rest: 0.1,
-      break: 0.1,
-    });
-    dispatch(init(config));
-  }, []);
+  const toggleSettings = () => {
+    if (isRunning) {
+      timerId && clearInterval(timerId);
+      dispatch(pause());
+    }
+    setShowSettings(!showSettings);
+  };
 
   return (
     <Container>
       <ClockDial />
       <Sessinons />
       <Controls />
+      <button onClick={toggleSettings}>Настройки</button>
+      {showSettings && <Settings />}
     </Container>
   );
 };
