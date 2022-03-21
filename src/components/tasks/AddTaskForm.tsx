@@ -1,4 +1,4 @@
-import { createTask } from 'features/tasks/TasksSlice';
+import { createTask } from 'features/tasks/tasksSlice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -18,6 +18,7 @@ export const AddTaskForm = () => {
       dispatch(createTask(content, isComplete));
       setTask('');
     }
+    setTask('');
   };
   return (
     <>

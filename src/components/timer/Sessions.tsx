@@ -49,7 +49,7 @@ export const Sessinons = () => {
         }
       })}
 
-      {config.sessions[currentSession] === 'rest' && (
+      {currentSession === 'rest' && (
         <PomodoroItemRest>
           <BiGame />
         </PomodoroItemRest>

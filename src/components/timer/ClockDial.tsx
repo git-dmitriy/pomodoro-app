@@ -26,7 +26,7 @@ export const ClockDial = () => {
         {leadingZero(Math.floor(time % 60))}
       </div>
 
-      <div>Current session: {config.sessions[currentSession]}</div>
+      <div>Current session: {currentSession}</div>
       <div>x{completedCycles}</div>
 
       <ul>

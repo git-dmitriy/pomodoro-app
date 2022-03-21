@@ -3,7 +3,7 @@ import { AddTaskForm } from 'components/tasks/AddTaskForm';
 import { TaskItem } from 'features/tasks/types';
 import { TaskListItem } from 'components/tasks/TaskListItem';
 import { useDispatch } from 'react-redux';
-import { removeCompleteTasks } from 'features/tasks/TasksSlice';
+import { removeCompleteTasks } from 'features/tasks/tasksSlice';
 
 type Tasks = {
   tasks: TaskItem[];

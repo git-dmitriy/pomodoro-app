@@ -10,7 +10,16 @@ export const timerSlice = createSlice({
         rest: 15,
         break: 5,
       },
-      sessions: [],
+      sessions: [
+        'focus',
+        'break',
+        'focus',
+        'break',
+        'focus',
+        'break',
+        'focus',
+        'rest',
+      ],
       sessionsBeforeRest: 4,
     },
     time: 0,
@@ -75,7 +84,14 @@ export const timerSlice = createSlice({
   },
 });
 
-export const { init, start, tick, pause, cycleComplete, nextSession } =
-  timerSlice.actions;
+export const {
+  init,
+  start,
+  tick,
+  pause,
+  cycleComplete,
+  nextSession,
+  setSettings,
+} = timerSlice.actions;
 
 export default timerSlice.reducer;

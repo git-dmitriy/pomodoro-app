@@ -1,7 +1,7 @@
 import { TaskItem } from 'features/tasks/types';
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { removeTask, updateTask } from 'features/tasks/TasksSlice';
+import { removeTask, updateTask } from 'features/tasks/tasksSlice';
 
 export const TaskListItem = (task: TaskItem) => {
   const [edit, setEdit] = useState(false);

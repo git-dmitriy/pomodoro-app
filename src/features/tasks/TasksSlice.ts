@@ -6,7 +6,7 @@ export const tasksSlice = createSlice({
   initialState: [] as TaskItem[],
   reducers: {
     createTask: {
-      reducer(state, action: PayloadAction<TaskItem>) {
+      reducer: (state, action: PayloadAction<TaskItem>) => {
         state.push(action.payload);
       },
       prepare(content: string, isComplete: boolean) {
