@@ -1,24 +1,62 @@
-import { TaskItem } from 'features/tasks/types';
-import { useRef, useState } from 'react';
+import { TaskItem as TaskItemType } from 'features/tasks/types';
+
+import { useRef, useState, useEffect, KeyboardEvent, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { removeTask, updateTask } from 'features/tasks/tasksSlice';
+import { Button } from 'components/ui/Button';
+import { AiFillDelete } from 'react-icons/ai';
+import { TaskInput } from 'components/ui/TaskInput';
+import { Checkbox } from 'components/ui/Checkbox';
+import { TaskItem } from 'components/ui/TaskItem';
+import styled from 'styled-components';
 
-export const TaskListItem = (task: TaskItem) => {
-  const [edit, setEdit] = useState(false);
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const TaskListItem = (task: TaskItemType) => {
   const [content, setContent] = useState(task.content);
-  const isComplete = useRef(task.isComplete);
-
+  const textInput = useRef<null | HTMLInputElement>(null);
+  const [isComplete, setIsComplete] = useState(task.isComplete);
   const dispatch = useDispatch();
 
-  const onEditHandler = () => {
-    setEdit(true);
+  const onSaveHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (content.trim() !== task.content) {
+        dispatch(
+          updateTask({
+            id: task.id,
+            content: content.trim(),
+            isComplete: isComplete,
+          })
+        );
+      }
+      textInput.current?.blur();
+    }
   };
 
-  const onSaveHandler = () => {
+  useEffect(() => {
     dispatch(
-      updateTask({ id: task.id, content, isComplete: isComplete.current })
+      updateTask({
+        id: task.id,
+        content: content.trim(),
+        isComplete: isComplete,
+      })
     );
-    setEdit(false);
+  }, [isComplete]);
+
+  const onBlurHandler = () => {
+    if (content.trim() !== task.content) {
+      dispatch(
+        updateTask({
+          id: task.id,
+          content: content.trim(),
+          isComplete: isComplete,
+        })
+      );
+    }
+    setContent(content.trim());
   };
 
   const onRemoveHandler = () => {
@@ -26,35 +64,34 @@ export const TaskListItem = (task: TaskItem) => {
   };
 
   const onCompleteHandler = () => {
-    dispatch(
-      updateTask({ id: task.id, content, isComplete: !isComplete.current })
-    );
+    setIsComplete(!isComplete);
   };
 
-  const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setContent(e.target.value);
+    if (!isComplete) {
+      setContent(e.target.value);
+    }
   };
 
   return (
-    <div>
-      <input
+    <TaskItem isChecked={isComplete}>
+      <Container onClick={onCompleteHandler}>
+        <Checkbox isChecked={isComplete} />
+      </Container>
+
+      <TaskInput
         type='text'
         value={content}
-        disabled={edit ? false : true}
+        ref={textInput}
         onChange={onChangeHandler}
+        onBlur={onBlurHandler}
+        onKeyUp={onSaveHandler}
       />
 
-      <button onClick={onRemoveHandler}>Удалить</button>
-
-      <button onClick={onCompleteHandler}>
-        {isComplete.current ? 'Невыполнено' : 'Выполнено'}
-      </button>
-      {edit ? (
-        <button onClick={onSaveHandler}>Сохранить</button>
-      ) : (
-        <button onClick={onEditHandler}>Изменить</button>
-      )}
-    </div>
+      <Button onClick={onRemoveHandler}>
+        <AiFillDelete />
+      </Button>
+    </TaskItem>
   );
 };
