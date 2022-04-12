@@ -11,12 +11,22 @@ export const Button = styled.button`
   color: white;
   background-color: transparent;
   border: none;
+  transition: background-color 0.3s, opacity 0.3s;
   cursor: pointer;
-  transition: background-color 0.3s;
 
-  &:active,
   &:hover,
   &:focus-visible {
     background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  &:disabled,
+  &[disabled] {
+    cursor: default;
+    opacity: 0.3;
+    background-color: transparent;
   }
 `;
