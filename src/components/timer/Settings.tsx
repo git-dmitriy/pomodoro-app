@@ -1,10 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { useLocalStorage } from 'components/hooks/useLocalsotrage';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { init, setSettings } from 'features/timer/timerSlice';
 import { Config, Session } from 'features/timer/types';
+import { InputNumber } from 'components/ui/InputNumber';
+import { FaSave } from 'react-icons/fa';
+import { Button } from 'components/ui/Button';
+import { RiCloseCircleFill } from 'react-icons/ri';
+import { Fieldset } from 'components/ui/Fieldset';
+import { SettingsContainer } from 'components/ui/SettingsContainer';
+import { SettingsHeader } from 'components/ui/SettingsHeader';
+import { FlexRow } from 'components/ui/FlexRow';
 
-export const Settings = () => {
+type P = {
+  setShowSettings: Dispatch<SetStateAction<boolean>>;
+};
+
+export const Settings = ({ setShowSettings }: P) => {
   const { config } = useAppSelector((state) => state.timer);
   const dispatch = useAppDispatch();
   const firstRender = useRef(true);
@@ -33,6 +51,7 @@ export const Settings = () => {
 
     dispatch(setSettings(localConfig));
     dispatch(init(localConfig));
+    closeSettings();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localConfig]);
@@ -86,70 +105,69 @@ export const Settings = () => {
     });
   };
 
+  const closeSettings = () => setShowSettings(false);
+
   return (
-    <div>
-      <h2>Настройки</h2>
+    <SettingsContainer>
+      <SettingsHeader>
+        <h2>Настройки</h2>
+        <FlexRow>
+          <Button onClick={onSubmitHandler}>
+            <FaSave />
+          </Button>
+          <Button onClick={closeSettings}>
+            <RiCloseCircleFill />
+          </Button>
+        </FlexRow>
+      </SettingsHeader>
 
       <form>
-        <fieldset>
-          <legend>Время:</legend>
-
-          <label htmlFor='focus'>Фокусировка</label>
-          <input
-            type='number'
+        <Fieldset legend='Время'>
+          <InputNumber
             id='focus'
             name='focus'
-            min='5'
-            max='60'
-            step='5'
-            required
+            min={5}
+            max={60}
+            step={5}
+            label='Фокусировка'
             value={timing.focus}
-            onChange={onChangeTimingHandler}
+            onChangeHandler={onChangeTimingHandler}
           />
-
-          <label htmlFor='break'>Перерыв</label>
-          <input
-            type='number'
+          <InputNumber
             id='break'
             name='break'
-            min='5'
-            max='60'
-            step='5'
-            required
+            min={5}
+            max={60}
+            step={5}
+            label='Перерыв'
             value={timing.break}
-            onChange={onChangeTimingHandler}
+            onChangeHandler={onChangeTimingHandler}
           />
-
-          <label htmlFor='rest'>Отдых</label>
-          <input
-            type='number'
+          <InputNumber
             id='rest'
             name='rest'
-            min='5'
-            max='60'
-            step='5'
-            required
+            min={5}
+            max={60}
+            step={5}
+            label='Отдых'
             value={timing.rest}
-            onChange={onChangeTimingHandler}
+            onChangeHandler={onChangeTimingHandler}
           />
-        </fieldset>
+        </Fieldset>
 
-        <fieldset>
-          <legend>Количество сессий:</legend>
-          <label htmlFor='sessionsBeforeRest'>Отдых через</label>
-          <input
-            type='number'
+        <Fieldset legend='Количество сессий:'>
+          <InputNumber
             id='sessionsBeforeRest'
             name='sessionsBeforeRest'
-            min='2'
-            max='16'
-            required
+            min={2}
+            max={16}
+            step={1}
+            label='Помидорки'
             value={sessionsBeforeRest}
-            onChange={onChangeSessionsBeforeRestHandler}
+            onChangeHandler={onChangeSessionsBeforeRestHandler}
           />
-          <button onClick={onSubmitHandler}>Сохранить</button>
-        </fieldset>
+        </Fieldset>
       </form>
-    </div>
+    </SettingsContainer>
   );
 };
