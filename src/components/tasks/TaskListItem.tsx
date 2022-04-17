@@ -1,13 +1,13 @@
 import { TaskItem as TaskItemType } from 'features/tasks/types';
-
 import { useRef, useState, useEffect, KeyboardEvent, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { removeTask, updateTask } from 'features/tasks/tasksSlice';
 import { Button } from 'components/ui/Button';
 import { AiFillDelete } from 'react-icons/ai';
-import { TaskInput } from 'components/ui/TaskInput';
 import { Checkbox } from 'components/ui/Checkbox';
 import { TaskItem } from 'components/ui/TaskItem';
+import { TextArea } from 'components/ui/TextArea';
+import { TextBlock } from 'components/ui/TextBlock';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -17,12 +17,14 @@ const Container = styled.div`
 
 export const TaskListItem = (task: TaskItemType) => {
   const [content, setContent] = useState(task.content);
-  const textInput = useRef<null | HTMLInputElement>(null);
+  const textInputRef = useRef<null | HTMLTextAreaElement>(null);
   const [isComplete, setIsComplete] = useState(task.isComplete);
+  const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
-  const onSaveHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+  const onSaveHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
+      e.preventDefault();
       if (content.trim() !== task.content) {
         dispatch(
           updateTask({
@@ -32,7 +34,7 @@ export const TaskListItem = (task: TaskItemType) => {
           })
         );
       }
-      textInput.current?.blur();
+      textInputRef.current?.blur();
     }
   };
 
@@ -46,6 +48,10 @@ export const TaskListItem = (task: TaskItemType) => {
     );
   }, [isComplete]);
 
+  useEffect(() => {
+    textInputRef.current?.focus();
+  }, [setIsEdit]);
+
   const onBlurHandler = () => {
     if (content.trim() !== task.content) {
       dispatch(
@@ -57,6 +63,7 @@ export const TaskListItem = (task: TaskItemType) => {
       );
     }
     setContent(content.trim());
+    setIsEdit(false);
   };
 
   const onRemoveHandler = () => {
@@ -67,11 +74,15 @@ export const TaskListItem = (task: TaskItemType) => {
     setIsComplete(!isComplete);
   };
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     if (!isComplete) {
       setContent(e.target.value);
     }
+  };
+  const onEditHandler = () => {
+    setIsEdit(true);
+    textInputRef.current?.focus();
   };
 
   return (
@@ -80,14 +91,17 @@ export const TaskListItem = (task: TaskItemType) => {
         <Checkbox isChecked={isComplete} />
       </Container>
 
-      <TaskInput
-        type='text'
-        value={content}
-        ref={textInput}
-        onChange={onChangeHandler}
-        onBlur={onBlurHandler}
-        onKeyUp={onSaveHandler}
-      />
+      {isEdit && !isComplete ? (
+        <TextArea
+          refElement={textInputRef}
+          content={content}
+          onChangeHandler={onChangeHandler}
+          onBlurHandler={onBlurHandler}
+          onKeyUpHandler={onSaveHandler}
+        />
+      ) : (
+        <TextBlock onClick={onEditHandler}>{content}</TextBlock>
+      )}
 
       <Button onClick={onRemoveHandler}>
         <AiFillDelete />
