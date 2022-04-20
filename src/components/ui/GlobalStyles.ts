@@ -1,10 +1,51 @@
 import { createGlobalStyle } from 'styled-components';
 
-export const GlobalStyles = createGlobalStyle`
+type P = {
+  bg: 'focus' | 'break' | 'rest' | 'standby';
+};
+
+const handleColorType = (color: string) => {
+  switch (color) {
+    case 'focus':
+      return '#bc4b51';
+    case 'break':
+      return '#5b8e7d';
+    case 'rest':
+      return '#8cb369';
+    default:
+      return '#22333b';
+  }
+};
+
+export const GlobalStyles = createGlobalStyle<P>`
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+  background-color: ${(props) => handleColorType(props.bg)};
+}
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 body {
@@ -35,8 +76,8 @@ dd {
   margin: 0;
 }
 
-ul[class],
-ol[class] {
+ul,
+ol {
   padding: 0;
   list-style: none;
 }
