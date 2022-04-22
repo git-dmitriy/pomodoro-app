@@ -3,18 +3,22 @@ import styled from 'styled-components';
 
 const TaskInputArea = styled.textarea`
   display: block;
-  width: 40ch;
+  width: 20ch;
+  min-width: 100%;
   resize: none;
   background-color: transparent;
   border: none;
   color: white;
   transition: color 0.3s;
   border-bottom: 4px solid transparent;
-  font-size: 30px;
-  line-height: 1.5;
   padding: 0;
+  margin: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 768px) {
+    width: 25ch;
+  }
 
   &::selection {
     background-color: #f4a259;
@@ -69,7 +73,7 @@ export const TextArea = ({
       onBlur={onBlurHandler}
       onKeyDown={onKeyUpHandler}
       autoFocus
-      rows={content.trim().length > 40 ? 2 : 1}
+      rows={content.trim().length > 20 ? 2 : 1}
     ></TaskInputArea>
   );
 };

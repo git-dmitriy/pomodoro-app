@@ -1,13 +1,22 @@
 import styled from 'styled-components';
 
 export const TaskItem = styled.div<{ isChecked: boolean }>`
-  display: flex;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
   align-items: center;
   gap: 1rem;
   opacity: ${({ isChecked }) => (isChecked ? 0.3 : 1)};
   position: relative;
-  width: 40ch;
-  font-size: 30px;
+  font-size: 20px;
+  line-height: 1.5;
+
+  @media (min-width: 640px) {
+    font-size: 30px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 35px;
+  }
 
   &::after {
     content: '';
