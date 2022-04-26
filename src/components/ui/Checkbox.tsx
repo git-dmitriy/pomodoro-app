@@ -4,8 +4,8 @@ import { Button } from 'components/ui/Button';
 
 const Frame = styled.div<{ ischecked: boolean }>`
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,7 +13,7 @@ const Frame = styled.div<{ ischecked: boolean }>`
   cursor: pointer;
   font-size: 30px;
   & svg {
-    color: ${({ ischecked: state }) => (state ? 'white' : 'transparent')};
+    color: ${({ ischecked: state }) => (state ? 'inherit' : 'transparent')};
     transition: color 0.3s;
   }
 `;
