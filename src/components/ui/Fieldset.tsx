@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 
 export const StyledFieldset = styled.fieldset`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   position: relative;
   border: none;
+
+  @media (min-width: 480px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const Legend = styled.legend`
   color: inherit;
   text-align: center;
-  font-size: 30px;
+  font-size: 1.3em;
 `;
 
 type P = {

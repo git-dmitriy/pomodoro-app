@@ -33,7 +33,7 @@ const FieldGroup = styled.div`
 
 const Input = styled.input`
   border-radius: 20px;
-  font-size: 20px;
+  font-size: inherit;
   padding: 5px 10px;
   background-color: rgba(0, 0, 0, 0.2);
   border: none;

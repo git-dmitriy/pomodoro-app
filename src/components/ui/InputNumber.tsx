@@ -8,7 +8,7 @@ export const Input = styled.input`
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: center;
-  font-size: 30px;
+  font-size: 1.2em;
 `;
 
 const Container = styled.div`
@@ -28,7 +28,6 @@ type P = {
   step: number;
   value: number;
   label: string;
-  required?: boolean;
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -40,12 +39,11 @@ export const InputNumber = ({
   step,
   value,
   label,
-  required,
   onChangeHandler,
 }: P) => {
   return (
     <Container>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{label}:</label>
       <Input
         id={id}
         name={name}
