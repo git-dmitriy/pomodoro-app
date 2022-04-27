@@ -1,18 +1,19 @@
 import { useEffect } from 'react';
-import styled from 'styled-components';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { useLocalStorage } from 'components/hooks/useLocalsotrage';
 import { Config } from 'features/timer/types';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
+import { FaPlay, FaPause, FaForward, FaUndoAlt } from 'react-icons/fa';
+import { Button } from 'components/ui/Button';
+import styled from 'styled-components';
 import {
   init,
   start,
   tick,
+  reset,
   pause,
   nextSession,
   cycleComplete,
 } from 'features/timer/timerSlice';
-import { MdPlayArrow, MdPause, MdSkipNext } from 'react-icons/md';
-import { GrPowerReset } from 'react-icons/gr';
 
 const ControlBtns = styled.div`
   display: flex;
@@ -52,6 +53,7 @@ export const Controls = () => {
 
   const resetHandler = () => {
     timerId && clearInterval(timerId);
+    dispatch(reset());
     dispatch(init(localConfig));
   };
 
@@ -76,20 +78,20 @@ export const Controls = () => {
   return (
     <ControlBtns>
       {isRunning ? (
-        <button onClick={pauseHandler}>
-          <MdPause />
-        </button>
+        <Button onClick={pauseHandler}>
+          <FaPause />
+        </Button>
       ) : (
-        <button onClick={startHandler}>
-          <MdPlayArrow />
-        </button>
+        <Button onClick={startHandler}>
+          <FaPlay />
+        </Button>
       )}
-      <button onClick={switchToNextSession}>
-        <MdSkipNext />
-      </button>
-      <button onClick={resetHandler}>
-        <GrPowerReset />
-      </button>
+      <Button onClick={switchToNextSession}>
+        <FaForward />
+      </Button>
+      <Button onClick={resetHandler}>
+        <FaUndoAlt />
+      </Button>
     </ControlBtns>
   );
 };

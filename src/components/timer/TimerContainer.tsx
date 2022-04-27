@@ -9,12 +9,14 @@ import { pause } from 'features/timer/timerSlice';
 import { Settings } from 'components/timer/Settings';
 import { Button } from 'components/ui/Button';
 import { Backdrop } from 'components/ui/Backdrop';
+import { AddTaskForm } from 'components/tasks/AddTaskForm';
 import Portal from 'components/ui/Portal';
 
 const Container = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
   padding: 20px;
   border-radius: 20px;
 `;
@@ -40,6 +42,7 @@ export const TimerContainer = () => {
       <ClockDial />
       <Sessinons />
       <Controls />
+      <AddTaskForm />
 
       {showSettings && (
         <Portal>

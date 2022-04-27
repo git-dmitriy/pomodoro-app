@@ -96,6 +96,7 @@ export const Settings = ({ setShowSettings }: P) => {
       }
     }
   };
+
   const onSubmitHandler = (e: React.SyntheticEvent) => {
     e.preventDefault();
     setLocalConfig({
