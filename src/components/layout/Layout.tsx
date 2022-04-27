@@ -10,6 +10,11 @@ const StyledLayout = styled.div`
   justify-content: center;
   align-items: center;
   transition: background-color 0.3s;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    gap: 50px;
+  }
 `;
 
 export const Layout: React.FC = ({ children }) => {
