@@ -1,13 +1,12 @@
-import { TasksList } from 'components/tasks/TasksList';
-import './App.css';
-import { Layout } from './components/layout/Layout';
-import { TimerContainer } from './components/timer/TimerContainer';
+import { Layout } from 'components/layout/Layout';
+import { TimerContainer } from 'components/timer/TimerContainer';
+import { TasksContainer } from 'components/tasks/TasksContainer';
 
 function App() {
   return (
     <Layout>
       <TimerContainer />
-      <TasksList />
+      <TasksContainer />
     </Layout>
   );
 }

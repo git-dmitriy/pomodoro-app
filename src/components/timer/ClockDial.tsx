@@ -1,10 +1,13 @@
 import { useAppSelector } from 'app/hooks';
-import { Timing } from 'features/timer/types';
-
 import styled from 'styled-components';
-const ClockDialTimer = styled.div`
-  font-size: 30px;
+
+const ClockDialTimer = styled.div``;
+
+const Timer = styled.div`
+  text-align: center;
+  font-size: 100px;
   font-weight: bold;
+  color: white;
 `;
 
 export const ClockDial = () => {
@@ -21,21 +24,10 @@ export const ClockDial = () => {
 
   return (
     <ClockDialTimer>
-      <div>
+      <Timer>
         {leadingZero(Math.floor(time / 60))}:
         {leadingZero(Math.floor(time % 60))}
-      </div>
-
-      <div>Current session: {currentSession}</div>
-      <div>x{completedCycles}</div>
-
-      <ul>
-        {Object.keys(config.timing).map((item, idx) => (
-          <li key={idx}>
-            {item}:{config.timing[item as keyof Timing]}
-          </li>
-        ))}
-      </ul>
+      </Timer>
     </ClockDialTimer>
   );
 };

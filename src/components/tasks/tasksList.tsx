@@ -1,58 +1,29 @@
-import { useSelector } from 'react-redux';
-import { AddTaskForm } from 'components/tasks/AddTaskForm';
-import { TaskItem } from 'features/tasks/types';
 import { TaskListItem } from 'components/tasks/TaskListItem';
-import { useDispatch } from 'react-redux';
-import { removeCompleteTasks } from 'features/tasks/tasksSlice';
+import { useAppSelector } from 'app/hooks';
+import styled from 'styled-components';
+import { Tasks } from 'features/tasks/types';
 
-type Tasks = {
-  tasks: TaskItem[];
-};
+const List = styled.ul`
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 20px;
+  padding: 20px 20px 20px 5px;
+
+  @media (max-width: 640px) {
+    padding-right: 5px;
+  }
+`;
 
 export const TasksList: React.FC = () => {
-  const dispatch = useDispatch();
-
-  const tasks = useSelector((state: Tasks) => state.tasks);
-  const completed = tasks.filter((task) => task.isComplete === true);
-
-  const removeCompleteTasksHandler = () => dispatch(removeCompleteTasks());
+  const tasks = useAppSelector((state: Tasks) => state.tasks);
 
   return (
-    <>
-      <AddTaskForm />
-      <b>Не выполненные</b>
-      <ul>
-        pupm-purum
-        {tasks.map((item, idx) => {
-          if (item.isComplete === false) {
-            return (
-              <li key={idx}>
-                <TaskListItem {...item} />
-              </li>
-            );
-          }
-          return null;
-        })}
-      </ul>
-      <b>Выполненные</b>
-      <ul>
-        {tasks.map((item, idx) => {
-          if (item.isComplete === true) {
-            return (
-              <li key={idx}>
-                <TaskListItem {...item} />
-              </li>
-            );
-          }
-          return null;
-        })}
-      </ul>
-
-      {completed.length !== 0 ? (
-        <button onClick={removeCompleteTasksHandler}>
-          Очистить выполненные задачи
-        </button>
-      ) : null}
-    </>
+    <List>
+      {tasks.map((item) => (
+        <li key={item.id}>
+          <TaskListItem {...item} />
+        </li>
+      ))}
+    </List>
   );
 };

@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import styled from 'styled-components';
-
+import { RiSettings4Fill } from 'react-icons/ri';
 import { ClockDial } from 'components/timer/ClockDial';
 import { Controls } from 'components/timer/Controls';
 import { Sessinons } from 'components/timer/Sessions';
 import { pause } from 'features/timer/timerSlice';
-import { Settings } from './Settings';
+import { Settings } from 'components/timer/Settings';
+import { Button } from 'components/ui/Button';
+import { Backdrop } from 'components/ui/Backdrop';
+import { AddTaskForm } from 'components/tasks/AddTaskForm';
+import Portal from 'components/ui/Portal';
 
-const Container = styled.div`
-  background-color: #d1d5db;
+const Container = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   padding: 20px;
   border-radius: 20px;
 `;
@@ -29,11 +36,21 @@ export const TimerContainer = () => {
 
   return (
     <Container>
+      <Button onClick={toggleSettings}>
+        <RiSettings4Fill />
+      </Button>
       <ClockDial />
       <Sessinons />
       <Controls />
-      <button onClick={toggleSettings}>Настройки</button>
-      {showSettings && <Settings />}
+      <AddTaskForm />
+
+      {showSettings && (
+        <Portal>
+          <Backdrop>
+            <Settings setShowSettings={setShowSettings} />
+          </Backdrop>
+        </Portal>
+      )}
     </Container>
   );
 };

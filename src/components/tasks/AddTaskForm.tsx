@@ -1,6 +1,7 @@
 import { createTask } from 'features/tasks/tasksSlice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { TaskInputField } from 'components/ui/TaskInputField';
 
 export const AddTaskForm = () => {
   const [content, setTask] = useState('');
@@ -15,7 +16,7 @@ export const AddTaskForm = () => {
   const onSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim().length !== 0) {
-      dispatch(createTask(content, isComplete));
+      dispatch(createTask(content.trim(), isComplete));
       setTask('');
     }
     setTask('');
@@ -23,14 +24,7 @@ export const AddTaskForm = () => {
   return (
     <>
       <form onSubmit={onSubmitHandler}>
-        <label htmlFor='task'>Задача:</label>
-        <input
-          type='text'
-          id='task'
-          value={content}
-          onChange={onChangeHandler}
-        />
-        <button>Добавить задач</button>
+        <TaskInputField value={content} onChange={onChangeHandler} />
       </form>
     </>
   );

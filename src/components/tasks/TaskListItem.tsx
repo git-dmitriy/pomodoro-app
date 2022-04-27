@@ -1,24 +1,69 @@
-import { TaskItem } from 'features/tasks/types';
-import { useRef, useState } from 'react';
+import { TaskItem as TaskItemType } from 'features/tasks/types';
+import { useRef, useState, useEffect, KeyboardEvent, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { removeTask, updateTask } from 'features/tasks/tasksSlice';
+import { Button } from 'components/ui/Button';
+import { AiFillDelete } from 'react-icons/ai';
+import { Checkbox } from 'components/ui/Checkbox';
+import { TaskItem } from 'components/ui/TaskItem';
+import { TextArea } from 'components/ui/TextArea';
+import { TextBlock } from 'components/ui/TextBlock';
+import styled from 'styled-components';
 
-export const TaskListItem = (task: TaskItem) => {
-  const [edit, setEdit] = useState(false);
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const TaskListItem = (task: TaskItemType) => {
   const [content, setContent] = useState(task.content);
-  const isComplete = useRef(task.isComplete);
-
+  const textInputRef = useRef<null | HTMLTextAreaElement>(null);
+  const [isComplete, setIsComplete] = useState(task.isComplete);
+  const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
-  const onEditHandler = () => {
-    setEdit(true);
+  const onSaveHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
+      e.preventDefault();
+      if (content.trim() !== task.content) {
+        dispatch(
+          updateTask({
+            id: task.id,
+            content: content.trim(),
+            isComplete: isComplete,
+          })
+        );
+      }
+      textInputRef.current?.blur();
+    }
   };
 
-  const onSaveHandler = () => {
+  useEffect(() => {
     dispatch(
-      updateTask({ id: task.id, content, isComplete: isComplete.current })
+      updateTask({
+        id: task.id,
+        content: content.trim(),
+        isComplete: isComplete,
+      })
     );
-    setEdit(false);
+  }, [isComplete]);
+
+  useEffect(() => {
+    textInputRef.current?.focus();
+  }, [setIsEdit]);
+
+  const onBlurHandler = () => {
+    if (content.trim() !== task.content) {
+      dispatch(
+        updateTask({
+          id: task.id,
+          content: content.trim(),
+          isComplete: isComplete,
+        })
+      );
+    }
+    setContent(content.trim());
+    setIsEdit(false);
   };
 
   const onRemoveHandler = () => {
@@ -26,35 +71,41 @@ export const TaskListItem = (task: TaskItem) => {
   };
 
   const onCompleteHandler = () => {
-    dispatch(
-      updateTask({ id: task.id, content, isComplete: !isComplete.current })
-    );
+    setIsComplete(!isComplete);
   };
 
-  const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
-    setContent(e.target.value);
+    if (!isComplete) {
+      setContent(e.target.value);
+    }
+  };
+  const onEditHandler = () => {
+    setIsEdit(true);
+    textInputRef.current?.focus();
   };
 
   return (
-    <div>
-      <input
-        type='text'
-        value={content}
-        disabled={edit ? false : true}
-        onChange={onChangeHandler}
-      />
+    <TaskItem isChecked={isComplete}>
+      <Container onClick={onCompleteHandler}>
+        <Checkbox isChecked={isComplete} />
+      </Container>
 
-      <button onClick={onRemoveHandler}>Удалить</button>
-
-      <button onClick={onCompleteHandler}>
-        {isComplete.current ? 'Невыполнено' : 'Выполнено'}
-      </button>
-      {edit ? (
-        <button onClick={onSaveHandler}>Сохранить</button>
+      {isEdit && !isComplete ? (
+        <TextArea
+          refElement={textInputRef}
+          content={content}
+          onChangeHandler={onChangeHandler}
+          onBlurHandler={onBlurHandler}
+          onKeyUpHandler={onSaveHandler}
+        />
       ) : (
-        <button onClick={onEditHandler}>Изменить</button>
+        <TextBlock onClick={onEditHandler}>{content}</TextBlock>
       )}
-    </div>
+
+      <Button onClick={onRemoveHandler}>
+        <AiFillDelete />
+      </Button>
+    </TaskItem>
   );
 };

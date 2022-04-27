@@ -1,16 +1,30 @@
+import { useAppSelector } from 'app/hooks';
 import styled from 'styled-components';
+import { GlobalStyles } from 'components/ui/GlobalStyles';
 
 const StyledLayout = styled.div`
   width: 100%;
-  height: 100vh;
-  background-color: #f3f4f6;
-  color: #4b5563;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    gap: 50px;
+  }
 `;
 
 export const Layout: React.FC = ({ children }) => {
-  return <StyledLayout>{children}</StyledLayout>;
+  const { isRunning, currentSession } = useAppSelector((state) => state.timer);
+  const backgroundColor = isRunning ? currentSession : 'standby';
+
+  return (
+    <StyledLayout>
+      {children}
+      <GlobalStyles bg={backgroundColor} />
+    </StyledLayout>
+  );
 };
