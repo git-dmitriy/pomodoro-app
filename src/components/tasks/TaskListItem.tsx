@@ -19,6 +19,7 @@ export const TaskListItem = (task: TaskItemType) => {
   const [content, setContent] = useState(task.content);
   const textInputRef = useRef<null | HTMLTextAreaElement>(null);
   const [isComplete, setIsComplete] = useState(task.isComplete);
+  const firstRender = useRef(true);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
@@ -39,13 +40,16 @@ export const TaskListItem = (task: TaskItemType) => {
   };
 
   useEffect(() => {
-    dispatch(
-      updateTask({
-        id: task.id,
-        content: content.trim(),
-        isComplete: isComplete,
-      })
-    );
+    if (!firstRender.current) {
+      dispatch(
+        updateTask({
+          id: task.id,
+          content: content.trim(),
+          isComplete: isComplete,
+        })
+      );
+    }
+    firstRender.current = false;
   }, [isComplete]);
 
   useEffect(() => {
