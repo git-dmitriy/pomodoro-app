@@ -16,6 +16,16 @@ const PomodoroItem = styled.li`
   border: 2px solid white;
   background-color: transparent;
   margin: 0 5px;
+
+  @media (min-width: 640px) {
+    width: 35px;
+    height: 35px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const PomodoroItemFill = styled(PomodoroItem)`

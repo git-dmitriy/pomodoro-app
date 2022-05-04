@@ -9,10 +9,12 @@ const StyledLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s;
 
   @media (min-width: 1024px) {
     flex-direction: row;
+  }
+
+  @media (min-width: 1280px) {
     gap: 50px;
   }
 `;

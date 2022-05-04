@@ -14,6 +14,12 @@ export const Button = styled.button`
   transition: background-color 0.3s, opacity 0.3s;
   cursor: pointer;
 
+  @media (min-width: 640px) {
+    min-width: 55px;
+    min-height: 55px;
+    font-size: 35px;
+  }
+
   &:hover,
   &:focus-visible {
     background-color: rgba(0, 0, 0, 0.1);

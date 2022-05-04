@@ -38,6 +38,15 @@ const Input = styled.input`
   background-color: rgba(0, 0, 0, 0.2);
   border: none;
   color: white;
+  width: 200px;
+
+  @media (min-width: 640px) {
+    width: 250px;
+  }
+
+  @media (min-width: 1280px) {
+    width: 300px;
+  }
 `;
 
 export const TaskInputField = ({ label, value, onChange }: P) => {

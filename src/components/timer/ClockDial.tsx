@@ -8,12 +8,22 @@ const Timer = styled.div`
   font-size: 100px;
   font-weight: bold;
   color: white;
+
+  @media (min-width: 411px) {
+    font-size: 110px;
+  }
+
+  @media (min-width: 640px) {
+    font-size: 125px;
+  }
+
+  @media (min-width: 1280px) {
+    font-size: 135px;
+  }
 `;
 
 export const ClockDial = () => {
-  const { time, config, currentSession, completedCycles } = useAppSelector(
-    (state) => state.timer
-  );
+  const { time } = useAppSelector((state) => state.timer);
 
   const leadingZero = (n: number) => {
     if (n < 10) {
