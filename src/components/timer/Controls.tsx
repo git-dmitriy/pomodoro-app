@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { useLocalStorage } from 'components/hooks/useLocalsotrage';
-import { Config } from 'features/timer/types';
-import { FaPlay, FaPause, FaForward, FaUndoAlt } from 'react-icons/fa';
+import { FlexContainer } from 'components/ui/FlexContainer';
 import { Button } from 'components/ui/Button';
-import styled from 'styled-components';
+import { Config } from 'features/timer/types';
 import {
   init,
   start,
@@ -14,11 +13,7 @@ import {
   nextSession,
   cycleComplete,
 } from 'features/timer/timerSlice';
-
-const ControlBtns = styled.div`
-  display: flex;
-  align-items: center;
-`;
+import { FaPlay, FaPause, FaForward, FaUndoAlt } from 'react-icons/fa';
 
 export const Controls = () => {
   const { time, sessionNumber, config, isRunning, timerId } = useAppSelector(
@@ -40,10 +35,10 @@ export const Controls = () => {
   }, []);
 
   const startHandler = () => {
-    const timer = setInterval(() => {
+    const timerId = setInterval(() => {
       dispatch(tick());
     }, 1000);
-    dispatch(start(timer));
+    dispatch(start(timerId));
   };
 
   const pauseHandler = () => {
@@ -76,7 +71,7 @@ export const Controls = () => {
   };
 
   return (
-    <ControlBtns>
+    <FlexContainer alignItems='center'>
       {isRunning ? (
         <Button onClick={pauseHandler}>
           <FaPause />
@@ -92,6 +87,6 @@ export const Controls = () => {
       <Button onClick={resetHandler}>
         <FaUndoAlt />
       </Button>
-    </ControlBtns>
+    </FlexContainer>
   );
 };

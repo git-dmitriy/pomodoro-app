@@ -15,8 +15,7 @@ import { Button } from 'components/ui/Button';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { Fieldset } from 'components/ui/Fieldset';
 import { SettingsContainer } from 'components/ui/SettingsContainer';
-import { SettingsHeader } from 'components/ui/SettingsHeader';
-import { FlexRow } from 'components/ui/FlexRow';
+import { FlexContainer } from 'components/ui/FlexContainer';
 
 type P = {
   setShowSettings: Dispatch<SetStateAction<boolean>>;
@@ -110,17 +109,17 @@ export const Settings = ({ setShowSettings }: P) => {
 
   return (
     <SettingsContainer>
-      <SettingsHeader>
+      <FlexContainer justifyContent='space-between' alignItems='center'>
         <h2>Настройки</h2>
-        <FlexRow>
+        <FlexContainer justifyContent='center' alignItems='center'>
           <Button onClick={onSubmitHandler}>
             <FaSave />
           </Button>
           <Button onClick={closeSettings}>
             <RiCloseCircleFill />
           </Button>
-        </FlexRow>
-      </SettingsHeader>
+        </FlexContainer>
+      </FlexContainer>
 
       <form>
         <Fieldset legend='Время'>

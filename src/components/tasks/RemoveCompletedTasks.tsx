@@ -4,12 +4,10 @@ import { useAppSelector } from 'app/hooks';
 import { MdDeleteSweep } from 'react-icons/md';
 import { Button } from 'components/ui/Button';
 import { Tasks } from 'features/tasks/types';
+import { FlexContainer } from 'components/ui/FlexContainer';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  text-align: right;
-  display: flex;
-  justify-content: end;
+const Container = styled(FlexContainer)`
   padding-right: 20px;
 
   @media (max-width: 640px) {
@@ -24,7 +22,7 @@ export const RemoveCompletedTasks = () => {
   const removeCompleteTasksHandler = () => dispatch(removeCompletedTasks());
 
   return (
-    <Container>
+    <Container justifyContent='flex-end'>
       {completed.length !== 0 ? (
         <Button onClick={removeCompleteTasksHandler}>
           <MdDeleteSweep />
