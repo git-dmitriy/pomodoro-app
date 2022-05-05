@@ -6,7 +6,7 @@ export const TextBlock = styled.p`
   word-wrap: break-word;
   border-bottom: 4px solid transparent;
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.media.md} {
     width: 25ch;
   }
 `;

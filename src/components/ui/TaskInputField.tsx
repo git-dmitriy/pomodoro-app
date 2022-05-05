@@ -40,11 +40,11 @@ const Input = styled.input`
   color: white;
   width: 200px;
 
-  @media (min-width: 640px) {
+  @media ${({ theme }) => theme.media.sm} {
     width: 250px;
   }
 
-  @media (min-width: 1280px) {
+  @media ${({ theme }) => theme.media.xl} {
     width: 300px;
   }
 `;

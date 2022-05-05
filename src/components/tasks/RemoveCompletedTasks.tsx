@@ -8,10 +8,10 @@ import { FlexContainer } from 'components/ui/FlexContainer';
 import styled from 'styled-components';
 
 const Container = styled(FlexContainer)`
-  padding-right: 20px;
+  padding-right: 5px;
 
-  @media (max-width: 640px) {
-    padding-right: 5px;
+  @media ${({ theme }) => theme.media.sm} {
+    padding-right: 20px;
   }
 `;
 

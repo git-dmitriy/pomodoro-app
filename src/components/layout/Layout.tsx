@@ -10,11 +10,11 @@ const StyledLayout = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (min-width: 1024px) {
+  @media ${({ theme }) => theme.media.lg} {
     flex-direction: row;
   }
 
-  @media (min-width: 1280px) {
+  @media ${({ theme }) => theme.media.xl} {
     gap: 50px;
   }
 `;

@@ -9,15 +9,15 @@ const Timer = styled.div`
   font-weight: bold;
   color: white;
 
-  @media (min-width: 411px) {
+  @media ${({ theme }) => theme.media.xs} {
     font-size: 110px;
   }
 
-  @media (min-width: 640px) {
+  @media ${({ theme }) => theme.media.sm} {
     font-size: 125px;
   }
 
-  @media (min-width: 1280px) {
+  @media ${({ theme }) => theme.media.xl} {
     font-size: 135px;
   }
 `;

@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { baseTheme } from 'theme';
 
 type P = {
   bg: 'focus' | 'break' | 'rest' | 'standby';
@@ -7,13 +8,13 @@ type P = {
 const handleColorType = (color: string) => {
   switch (color) {
     case 'focus':
-      return '#bc4b51';
+      return baseTheme.colors.focus;
     case 'break':
-      return '#5b8e7d';
+      return baseTheme.colors.break;
     case 'rest':
-      return '#8cb369';
+      return baseTheme.colors.rest;
     default:
-      return '#22333b';
+      return baseTheme.colors.standby;
   }
 };
 

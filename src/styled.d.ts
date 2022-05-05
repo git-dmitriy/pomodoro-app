@@ -1,12 +1,5 @@
 import 'styled-components';
-
+import { ITheme } from 'interfaces/styled';
 declare module 'styled-components' {
-  export interface DefaultTheme {
-    borderRadius: string;
-
-    colors: {
-      main: string;
-      secondary: string;
-    };
-  }
+  export interface DefaultTheme extends ITheme {}
 }

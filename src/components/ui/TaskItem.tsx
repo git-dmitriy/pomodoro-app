@@ -10,11 +10,11 @@ export const TaskItem = styled.div<{ isChecked: boolean }>`
   font-size: 20px;
   line-height: 1.5;
 
-  @media (min-width: 640px) {
+  @media ${({ theme }) => theme.media.sm} {
     font-size: 30px;
   }
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.media.md} {
     font-size: 35px;
   }
 

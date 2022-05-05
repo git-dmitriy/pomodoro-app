@@ -17,12 +17,12 @@ const PomodoroItem = styled.li`
   background-color: transparent;
   margin: 0 5px;
 
-  @media (min-width: 640px) {
+  @media ${({ theme }) => theme.media.sm} {
     width: 35px;
     height: 35px;
   }
 
-  @media (min-width: 1024px) {
+  @media ${({ theme }) => theme.media.lg} {
     width: 40px;
     height: 40px;
   }

@@ -16,7 +16,7 @@ const TaskInputArea = styled.textarea`
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 
-  @media (min-width: 768px) {
+  @media ${({ theme }) => theme.media.md} {
     width: 25ch;
   }
 
