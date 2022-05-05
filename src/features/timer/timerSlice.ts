@@ -35,16 +35,13 @@ export const timerSlice = createSlice({
   reducers: {
     init: (state, action: PayloadAction<Config>) => {
       state.config = action.payload;
+      state.currentSession = state.config.sessions[state.sessionNumber];
       state.time = state.config.timing[state.currentSession] * 60;
     },
 
     start: (state, action) => {
       state.isRunning = true;
       state.timerId = action.payload;
-    },
-
-    tick: (state) => {
-      state.time -= 1;
     },
 
     pause: (state) => {
@@ -55,7 +52,9 @@ export const timerSlice = createSlice({
     reset: (state) => {
       state.timerId = null;
       state.isRunning = false;
+      state.sessionNumber = 0;
       state.completedCycles = 0;
+      state.tomatoes = 0;
       state.totalTomatoes = 0;
     },
 
@@ -87,8 +86,8 @@ export const timerSlice = createSlice({
 export const {
   init,
   start,
-  tick,
   pause,
+  reset,
   cycleComplete,
   nextSession,
   setSettings,

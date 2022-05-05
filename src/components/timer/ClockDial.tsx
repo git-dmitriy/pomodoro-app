@@ -22,9 +22,11 @@ const Timer = styled.div`
   }
 `;
 
-export const ClockDial = () => {
-  const { time } = useAppSelector((state) => state.timer);
+type P = {
+  time: number;
+};
 
+export const ClockDial = ({ time }: P) => {
   const leadingZero = (n: number) => {
     if (n < 10) {
       return '0' + n;
