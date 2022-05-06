@@ -50,6 +50,7 @@ export const TaskListItem = (task: TaskItemType) => {
       );
     }
     firstRender.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComplete]);
 
   useEffect(() => {
@@ -104,7 +105,7 @@ export const TaskListItem = (task: TaskItemType) => {
           onKeyUpHandler={onSaveHandler}
         />
       ) : (
-        <TextBlock onClick={onEditHandler}>{content}</TextBlock>
+        <TextBlock onClickHandler={onEditHandler}>{content}</TextBlock>
       )}
 
       <Button onClick={onRemoveHandler}>
