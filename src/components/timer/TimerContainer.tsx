@@ -88,6 +88,7 @@ export const TimerContainer = () => {
     timerId && clearInterval(timerId);
     dispatch(reset());
     dispatch(init(localConfig));
+    setTimeLeft(time);
   };
 
   const switchToNextSession = () => {
