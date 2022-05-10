@@ -32,20 +32,20 @@ const FieldGroup = styled.div`
 `;
 
 const Input = styled.input`
-  border-radius: 20px;
-  font-size: inherit;
+  border-radius: 1.25rem;
+  font-size: 1.3rem;
   padding: 5px 10px;
   background-color: rgba(0, 0, 0, 0.2);
   border: none;
   color: white;
-  width: 200px;
+  width: 12.5rem;
 
   @media ${({ theme }) => theme.media.sm} {
-    width: 250px;
+    width: 15.625rem;
   }
 
   @media ${({ theme }) => theme.media.xl} {
-    width: 300px;
+    width: 18.75rem;
   }
 `;
 

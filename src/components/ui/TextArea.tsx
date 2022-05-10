@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const TaskInputArea = styled.textarea`
   display: block;
-  width: 20ch;
+  width: 15ch;
   min-width: 100%;
   resize: none;
   background-color: transparent;
@@ -15,6 +15,10 @@ const TaskInputArea = styled.textarea`
   margin: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+
+  @media ${({ theme }) => theme.media.sm} {
+    width: 20ch;
+  }
 
   @media ${({ theme }) => theme.media.md} {
     width: 25ch;

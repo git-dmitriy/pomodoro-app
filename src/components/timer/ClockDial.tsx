@@ -5,20 +5,20 @@ const ClockDialTimer = styled.div``;
 
 const Timer = styled.div`
   text-align: center;
-  font-size: 100px;
+  font-size: 6.25rem;
   font-weight: bold;
   color: white;
 
   @media ${({ theme }) => theme.media.xs} {
-    font-size: 110px;
+    font-size: 6.875rem;
   }
 
   @media ${({ theme }) => theme.media.sm} {
-    font-size: 125px;
+    font-size: 7.8125rem;
   }
 
   @media ${({ theme }) => theme.media.xl} {
-    font-size: 135px;
+    font-size: 8.437rem;
   }
 `;
 

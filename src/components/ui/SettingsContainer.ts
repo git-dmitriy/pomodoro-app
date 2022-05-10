@@ -1,12 +1,15 @@
 import styled from 'styled-components';
 
 export const SettingsContainer = styled.div`
+  margin: 0 0.5rem;
   padding: 1.5rem;
   background-color: #22333b;
   border-radius: 1rem;
-  font-size: 20px;
+  font-size: 1.25rem;
 
   @media ${({ theme }) => theme.media.sm} {
-    font-size: 20px;
+    margin: 0;
+    font-size: 1.25rem;
+    padding: 1.5rem;
   }
 `;
