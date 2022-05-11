@@ -4,15 +4,16 @@ import styled from 'styled-components';
 const TaskInputArea = styled.textarea`
   display: block;
   width: 15ch;
-  min-width: 100%;
-  resize: none;
-  background-color: transparent;
-  border: none;
   color: white;
+  resize: none;
+  border: none;
   transition: color 0.3s;
+  background-color: transparent;
   border-bottom: 4px solid transparent;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  padding-bottom: 5px;
+  line-height: 1.2;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 

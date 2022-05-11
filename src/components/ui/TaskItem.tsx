@@ -9,6 +9,7 @@ export const TaskItem = styled.div<{ isChecked: boolean }>`
   position: relative;
   font-size: 1.25rem;
   line-height: 1.5;
+  padding: 5px 0;
 
   @media ${({ theme }) => theme.media.sm} {
     grid-template-columns: 3.125rem 1fr 3.125rem;
