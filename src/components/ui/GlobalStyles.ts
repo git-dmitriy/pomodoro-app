@@ -32,7 +32,7 @@ export const GlobalStyles = createGlobalStyle<P>`
   background-color: ${(props) => handleColorType(props.bg)};
 }
 ::-webkit-scrollbar {
-  width: 0.5rem;
+  inline-size: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -50,7 +50,7 @@ export const GlobalStyles = createGlobalStyle<P>`
 }
 
 body {
-  min-height: 100vh;
+  min-block-size: 100vh;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
   line-height: 1.5;

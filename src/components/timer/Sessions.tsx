@@ -15,7 +15,8 @@ const PomodoroItem = styled.li`
   border-radius: 50%;
   border: 2px solid white;
   background-color: transparent;
-  margin: 0 5px;
+  margin-block: 0;
+  margin-inline: 5px;
 
   @media ${({ theme }) => theme.media.sm} {
     width: 35px;

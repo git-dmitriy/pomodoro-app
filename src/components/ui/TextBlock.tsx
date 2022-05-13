@@ -2,20 +2,20 @@ import styled from 'styled-components';
 
 const Text = styled.span`
   display: block;
-  width: 15ch;
+  inline-size: 15ch;
   margin: 0;
   padding: 0;
+  padding-block-end: 5px;
   word-wrap: break-word;
-  padding-bottom: 5px;
-  border-bottom: 4px solid transparent;
+  border-block-end: 4px solid transparent;
   line-height: 1.2;
 
   @media ${({ theme }) => theme.media.sm} {
-    width: 20ch;
+    inline-size: 20ch;
   }
 
   @media ${({ theme }) => theme.media.md} {
-    width: 25ch;
+    inline-size: 25ch;
   }
 `;
 
@@ -30,7 +30,7 @@ const Button = styled.button`
   background-color: transparent;
   padding: 0;
   color: inherit;
-  text-align: left;
+  text-align: start;
 `;
 
 export const TextBlock = ({ children, onClickHandler }: P) => {

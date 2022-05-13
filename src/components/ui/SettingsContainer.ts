@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export const SettingsContainer = styled.div`
-  margin: 0 0.5rem;
+  margin-block: 0;
+  margin-inline: 0.5rem;
   padding: 1.5rem;
   background-color: #22333b;
   border-radius: 1rem;

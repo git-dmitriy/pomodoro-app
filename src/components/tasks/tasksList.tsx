@@ -7,13 +7,13 @@ import { loadTasks } from 'features/tasks/tasksSlice';
 import { useAppDispatch } from 'app/hooks';
 
 const List = styled.ul`
-  max-height: 80vh;
-  overflow-y: auto;
-  padding-right: 20px;
-  padding: 20px 20px 20px 5px;
+  max-block-size: 80vh;
+  overflow-block: auto;
+  padding-inline: 5px 20px;
+  padding-block: 20px;
 
   @media (max-width: 640px) {
-    padding-right: 5px;
+    padding-inline: 20px 5px;
   }
 `;
 
@@ -29,6 +29,8 @@ export const TasksList: React.FC = () => {
       firstRender.current = false;
     }
     setTaskList(tasks);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks]);
 
   return (

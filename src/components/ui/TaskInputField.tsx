@@ -27,25 +27,26 @@ const FieldGroup = styled.div`
   align-items: center;
 
   & > * + * {
-    margin-left: 5px;
+    margin-inline-start: 5px;
   }
 `;
 
 const Input = styled.input`
   border-radius: 1.25rem;
   font-size: 1.3rem;
-  padding: 5px 10px;
+  padding-block: 5px;
+  padding-inline: 10px;
   background-color: rgba(0, 0, 0, 0.2);
   border: none;
   color: white;
-  width: 12.5rem;
+  inline-size: 12.5rem;
 
   @media ${({ theme }) => theme.media.sm} {
-    width: 15.625rem;
+    inline-size: 15.625rem;
   }
 
   @media ${({ theme }) => theme.media.xl} {
-    width: 18.75rem;
+    inline-size: 18.75rem;
   }
 `;
 

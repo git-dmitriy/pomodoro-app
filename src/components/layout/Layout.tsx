@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { GlobalStyles } from 'components/ui/GlobalStyles';
 
 const StyledLayout = styled.div`
-  width: 100%;
-  min-height: 100vh;
+  inline-size: 100%;
+  min-block-size: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -9,7 +9,8 @@ export const TaskItem = styled.div<{ isChecked: boolean }>`
   position: relative;
   font-size: 1.25rem;
   line-height: 1.5;
-  padding: 5px 0;
+  padding-block: 5px;
+  padding-inline: 0;
 
   @media ${({ theme }) => theme.media.sm} {
     grid-template-columns: 3.125rem 1fr 3.125rem;
@@ -24,9 +25,10 @@ export const TaskItem = styled.div<{ isChecked: boolean }>`
   &::after {
     content: '';
     position: absolute;
-    height: ${({ isChecked }) => (isChecked ? '2px' : '0')};
-    left: 0;
-    right: 50px;
+    block-size: ${({ isChecked }) => (isChecked ? '2px' : '0')};
+    inset-inline-start: 0;
+    inset-inline-end: 50px;
+    inset-block-start: 50%;
     top: 50%;
     transform: translateY(-50%);
     background-color: #fff;

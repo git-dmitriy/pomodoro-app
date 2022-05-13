@@ -9,14 +9,20 @@ type P = {
     | 'center'
     | 'space-between'
     | 'space-around';
-  padding?: string;
-  margin?: string;
+  paddingBlock?: string;
+  paddingInline?: string;
+  marginBlock?: string;
+  marginInline?: string;
+  gap?: string;
 };
 
 export const FlexContainer = styled.div<P>`
   display: flex;
   flex-direction: ${({ direction }) => direction || 'row'};
   justify-content: ${({ justifyContent }) => justifyContent || 'center'};
-  margin: ${({ margin }) => (margin || 0) + 'px'};
-  padding: ${({ padding }) => (padding || 0) + 'px'};
+  margin-block: ${({ marginBlock }) => marginBlock || 0};
+  margin-inline: ${({ marginInline }) => marginInline || 0};
+  padding-block: ${({ paddingBlock }) => paddingBlock || 0};
+  padding-inline: ${({ paddingInline }) => paddingInline || 0};
+  gap: ${({ gap }) => gap || 0};
 `;
