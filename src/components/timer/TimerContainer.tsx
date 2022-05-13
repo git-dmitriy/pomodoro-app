@@ -37,6 +37,7 @@ export const TimerContainer = () => {
   const { isRunning, timerId, time, sessionNumber, config } = useAppSelector(
     (state) => state.timer
   );
+  const audio = new Audio(process.env.PUBLIC_URL + '/ding.mp3');
 
   const [timeLeft, setTimeLeft] = useState<number>(time);
   const [localConfig] = useLocalStorage<Config>('config', config);
@@ -48,6 +49,9 @@ export const TimerContainer = () => {
       console.log('time:', time);
       switchToNextSession();
       setTimeLeft(time);
+    }
+    if (timeLeft === 0 && isRunning) {
+      audio.play();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, isRunning]);
