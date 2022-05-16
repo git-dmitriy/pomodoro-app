@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from 'app/hooks';
 import { removeCompletedTasks } from 'features/tasks/tasksSlice';
 import { useAppSelector } from 'app/hooks';
 import { MdDeleteSweep } from 'react-icons/md';
@@ -16,7 +16,7 @@ const Container = styled(FlexContainer)`
 `;
 
 export const RemoveCompletedTasks = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const tasks = useAppSelector((state: Tasks) => state.tasks);
   const completed = tasks.filter((task) => task.isComplete === true);
   const removeCompleteTasksHandler = () => dispatch(removeCompletedTasks());

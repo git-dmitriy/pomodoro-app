@@ -1,4 +1,3 @@
-import { useAppSelector } from 'app/hooks';
 import styled from 'styled-components';
 
 const ClockDialTimer = styled.div``;
@@ -26,13 +25,15 @@ type P = {
   time: number;
 };
 
+const leadingZero = (n: number) => {
+  if (n < 10) {
+    return '0' + n;
+  }
+  return n;
+};
+
 export const ClockDial = ({ time }: P) => {
-  const leadingZero = (n: number) => {
-    if (n < 10) {
-      return '0' + n;
-    }
-    return n;
-  };
+  time = time > 0 ? time : 0;
 
   return (
     <ClockDialTimer>

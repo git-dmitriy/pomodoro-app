@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 type P = {
-  direction?: 'row' | 'col';
-  alignItems?: 'lex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
+  direction?: 'row' | 'column';
+  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
   justifyContent?:
     | 'flex-start'
     | 'flex-end'
@@ -20,6 +20,7 @@ export const FlexContainer = styled.div<P>`
   display: flex;
   flex-direction: ${({ direction }) => direction || 'row'};
   justify-content: ${({ justifyContent }) => justifyContent || 'center'};
+  align-items: ${({ alignItems }) => alignItems || 'center'};
   margin-block: ${({ marginBlock }) => marginBlock || 0};
   margin-inline: ${({ marginInline }) => marginInline || 0};
   padding-block: ${({ paddingBlock }) => paddingBlock || 0};
