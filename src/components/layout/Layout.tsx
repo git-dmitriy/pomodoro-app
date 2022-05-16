@@ -3,16 +3,18 @@ import styled from 'styled-components';
 import { GlobalStyles } from 'components/ui/GlobalStyles';
 
 const StyledLayout = styled.div`
-  width: 100%;
-  min-height: 100vh;
+  inline-size: 100%;
+  min-block-size: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s;
 
-  @media (min-width: 1024px) {
+  @media ${({ theme }) => theme.media.lg} {
     flex-direction: row;
+  }
+
+  @media ${({ theme }) => theme.media.xl} {
     gap: 50px;
   }
 `;

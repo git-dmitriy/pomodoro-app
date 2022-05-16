@@ -1,22 +1,23 @@
-import React, {
+import {
   useState,
   useEffect,
   useRef,
   Dispatch,
   SetStateAction,
+  ChangeEvent,
+  SyntheticEvent,
 } from 'react';
 import { useLocalStorage } from 'components/hooks/useLocalsotrage';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { init, setSettings } from 'features/timer/timerSlice';
 import { Config, Session } from 'features/timer/types';
 import { InputNumber } from 'components/ui/InputNumber';
-import { FaSave } from 'react-icons/fa';
 import { Button } from 'components/ui/Button';
+import { FaSave } from 'react-icons/fa';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { Fieldset } from 'components/ui/Fieldset';
 import { SettingsContainer } from 'components/ui/SettingsContainer';
-import { SettingsHeader } from 'components/ui/SettingsHeader';
-import { FlexRow } from 'components/ui/FlexRow';
+import { FlexContainer } from 'components/ui/FlexContainer';
 
 type P = {
   setShowSettings: Dispatch<SetStateAction<boolean>>;
@@ -65,7 +66,7 @@ export const Settings = ({ setShowSettings }: P) => {
     return sessions;
   };
 
-  const onChangeTimingHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (
       e.target.value.trim().length !== 0 &&
       typeof parseInt(e.target.value, 10) === 'number'
@@ -81,7 +82,7 @@ export const Settings = ({ setShowSettings }: P) => {
   };
 
   const onChangeSessionsBeforeRestHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: ChangeEvent<HTMLInputElement>
   ) => {
     if (
       e.target.value.trim().length !== 0 &&
@@ -97,7 +98,7 @@ export const Settings = ({ setShowSettings }: P) => {
     }
   };
 
-  const onSubmitHandler = (e: React.SyntheticEvent) => {
+  const onSubmitHandler = (e: SyntheticEvent) => {
     e.preventDefault();
     setLocalConfig({
       timing,
@@ -110,20 +111,20 @@ export const Settings = ({ setShowSettings }: P) => {
 
   return (
     <SettingsContainer>
-      <SettingsHeader>
+      <FlexContainer justifyContent='space-between' alignItems='center'>
         <h2>Настройки</h2>
-        <FlexRow>
+        <FlexContainer justifyContent='center' alignItems='center'>
           <Button onClick={onSubmitHandler}>
             <FaSave />
           </Button>
           <Button onClick={closeSettings}>
             <RiCloseCircleFill />
           </Button>
-        </FlexRow>
-      </SettingsHeader>
+        </FlexContainer>
+      </FlexContainer>
 
       <form>
-        <Fieldset legend='Время'>
+        <Fieldset legend='Время:'>
           <InputNumber
             id='focus'
             name='focus'

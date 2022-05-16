@@ -3,21 +3,26 @@ import styled from 'styled-components';
 
 const TaskInputArea = styled.textarea`
   display: block;
-  width: 20ch;
-  min-width: 100%;
-  resize: none;
-  background-color: transparent;
-  border: none;
+  inline-size: 15ch;
   color: white;
+  resize: none;
+  border: none;
   transition: color 0.3s;
-  border-bottom: 4px solid transparent;
-  padding: 0;
+  background-color: transparent;
+  border-block-end: 4px solid transparent;
   margin: 0;
+  padding: 0;
+  padding-block-end: 5px;
+  line-height: 1.2;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 
-  @media (min-width: 768px) {
-    width: 25ch;
+  @media ${({ theme }) => theme.media.sm} {
+    inline-size: 20ch;
+  }
+
+  @media ${({ theme }) => theme.media.md} {
+    inline-size: 25ch;
   }
 
   &::selection {
@@ -26,12 +31,11 @@ const TaskInputArea = styled.textarea`
 
   &:focus-visible {
     outline: none;
-    border-bottom: 2px solid white;
-    border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+    border-block-end: 4px solid rgba(0, 0, 0, 0.3);
   }
 
   &::-webkit-scrollbar {
-    width: 0.5rem;
+    inline-size: 0.5rem;
   }
 
   &::-webkit-scrollbar-track {

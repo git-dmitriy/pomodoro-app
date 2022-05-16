@@ -1,24 +1,14 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TaskItem } from 'features/tasks/types';
 
 export const tasksSlice = createSlice({
   name: 'taskList',
   initialState: [] as TaskItem[],
   reducers: {
-    createTask: {
-      reducer: (state, action: PayloadAction<TaskItem>) => {
-        state.push(action.payload);
-      },
-      prepare(content: string, isComplete: boolean) {
-        return {
-          payload: {
-            id: nanoid(),
-            content,
-            isComplete,
-          },
-        };
-      },
+    createTask: (state, action: PayloadAction<TaskItem>) => {
+      state.push(action.payload);
     },
+
     removeTask: (state, action: PayloadAction<{ id: string }>) =>
       state.filter((task) => task.id !== action.payload.id),
 
@@ -31,12 +21,20 @@ export const tasksSlice = createSlice({
         existingTask.isComplete = isComplete;
       }
     },
-    removeCompleteTasks: (state) =>
+    loadTasks: (state, action: PayloadAction<TaskItem[]>) => {
+      return state.concat(...action.payload);
+    },
+    removeCompletedTasks: (state) =>
       state.filter((task) => task.isComplete === false),
   },
 });
 
-export const { createTask, removeTask, updateTask, removeCompleteTasks } =
-  tasksSlice.actions;
+export const {
+  createTask,
+  removeTask,
+  updateTask,
+  removeCompletedTasks,
+  loadTasks,
+} = tasksSlice.actions;
 
 export default tasksSlice.reducer;

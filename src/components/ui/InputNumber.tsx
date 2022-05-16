@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Input = styled.input`
-  width: 100px;
+  inline-size: 100px;
   color: inherit;
   border: none;
   background-color: transparent;
@@ -43,7 +43,7 @@ export const InputNumber = ({
 }: P) => {
   return (
     <Container>
-      <label htmlFor={id}>{label}:</label>
+      <label htmlFor={id}>{label}</label>
       <Input
         id={id}
         name={name}

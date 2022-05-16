@@ -1,6 +1,6 @@
 import { TaskItem as TaskItemType } from 'features/tasks/types';
 import { useRef, useState, useEffect, KeyboardEvent, ChangeEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from 'app/hooks';
 import { removeTask, updateTask } from 'features/tasks/tasksSlice';
 import { Button } from 'components/ui/Button';
 import { AiFillDelete } from 'react-icons/ai';
@@ -8,19 +8,15 @@ import { Checkbox } from 'components/ui/Checkbox';
 import { TaskItem } from 'components/ui/TaskItem';
 import { TextArea } from 'components/ui/TextArea';
 import { TextBlock } from 'components/ui/TextBlock';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-`;
+import { FlexContainer } from 'components/ui/FlexContainer';
 
 export const TaskListItem = (task: TaskItemType) => {
   const [content, setContent] = useState(task.content);
   const textInputRef = useRef<null | HTMLTextAreaElement>(null);
   const [isComplete, setIsComplete] = useState(task.isComplete);
+  const firstRender = useRef(true);
   const [isEdit, setIsEdit] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSaveHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' || e.key === 'Escape') {
@@ -39,13 +35,17 @@ export const TaskListItem = (task: TaskItemType) => {
   };
 
   useEffect(() => {
-    dispatch(
-      updateTask({
-        id: task.id,
-        content: content.trim(),
-        isComplete: isComplete,
-      })
-    );
+    if (!firstRender.current) {
+      dispatch(
+        updateTask({
+          id: task.id,
+          content: content.trim(),
+          isComplete: isComplete,
+        })
+      );
+    }
+    firstRender.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComplete]);
 
   useEffect(() => {
@@ -87,9 +87,9 @@ export const TaskListItem = (task: TaskItemType) => {
 
   return (
     <TaskItem isChecked={isComplete}>
-      <Container onClick={onCompleteHandler}>
+      <FlexContainer alignItems='center' onClick={onCompleteHandler}>
         <Checkbox isChecked={isComplete} />
-      </Container>
+      </FlexContainer>
 
       {isEdit && !isComplete ? (
         <TextArea
@@ -100,7 +100,7 @@ export const TaskListItem = (task: TaskItemType) => {
           onKeyUpHandler={onSaveHandler}
         />
       ) : (
-        <TextBlock onClick={onEditHandler}>{content}</TextBlock>
+        <TextBlock onClickHandler={onEditHandler}>{content}</TextBlock>
       )}
 
       <Button onClick={onRemoveHandler}>

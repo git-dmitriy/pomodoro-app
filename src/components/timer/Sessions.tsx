@@ -15,14 +15,25 @@ const PomodoroItem = styled.li`
   border-radius: 50%;
   border: 2px solid white;
   background-color: transparent;
-  margin: 0 5px;
+  margin-block: 0;
+  margin-inline: 5px;
+
+  @media ${({ theme }) => theme.media.sm} {
+    width: 35px;
+    height: 35px;
+  }
+
+  @media ${({ theme }) => theme.media.lg} {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const PomodoroItemFill = styled(PomodoroItem)`
   background-color: white;
 `;
 
-export const Sessinons = () => {
+export const Sessions = () => {
   const { tomatoes, config } = useAppSelector((state) => state.timer);
 
   const totalTomatoes = Array.from(Array(config.sessions.length / 2).keys());
