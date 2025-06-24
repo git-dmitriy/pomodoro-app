@@ -1,22 +1,23 @@
 import styled from 'styled-components';
 
-export const Input = styled.input`
-    inline-size: 100px;
+const Input = styled.input`
+    inline-size: 6.25rem;
+    padding-block: .5rem;
     color: inherit;
     border: none;
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    border-radius: .625rem;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.2rem;
 `;
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 2px;
-    border-radius: 20px;
-    padding: 5px;
+    display: grid;
+    gap: var(--unit-3);
+    justify-items: center;
+    margin: var(--unit-1);
+    border-radius: 1.25rem;
+    padding: var(--unit-2);
 `;
 
 type P = {

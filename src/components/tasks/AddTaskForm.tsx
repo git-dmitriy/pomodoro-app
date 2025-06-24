@@ -3,7 +3,13 @@ import {useState, FormEvent} from 'react';
 import {nanoid} from '@reduxjs/toolkit';
 import {TaskInputField} from '@/components/ui/TaskInputField';
 import {useAppDispatch} from "@/hooks/useAppDispatch";
+import styled from "styled-components";
 
+
+const Container = styled.form`
+    grid-area: add-task-form;
+    padding-inline-end: var(--unit-4);
+`
 
 export const AddTaskForm = () => {
     const [content, setTask] = useState('');
@@ -25,8 +31,11 @@ export const AddTaskForm = () => {
         setTask('');
     };
     return (
-        <form onSubmit={onSubmitHandler}>
-            <TaskInputField value={content} onChange={onChangeHandler}/>
-        </form>
+        <Container onSubmit={onSubmitHandler}>
+            <TaskInputField
+                value={content}
+                onChange={onChangeHandler}
+            />
+        </Container>
     );
 };

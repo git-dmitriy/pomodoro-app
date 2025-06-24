@@ -7,7 +7,6 @@ import {Checkbox} from '@/components/ui/Checkbox';
 import {TaskItem} from '@/components/ui/TaskItem';
 import {TextArea} from '@/components/ui/TextArea';
 import {TextBlock} from '@/components/ui/TextBlock';
-import {FlexContainer} from '@/components/ui/FlexContainer';
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 
 export const TaskListItem = (task: TaskItemType) => {
@@ -87,9 +86,10 @@ export const TaskListItem = (task: TaskItemType) => {
 
     return (
         <TaskItem $isChecked={isComplete}>
-            <FlexContainer $alignItems='center' onClick={onCompleteHandler}>
-                <Checkbox $isChecked={isComplete}/>
-            </FlexContainer>
+            <Checkbox
+                $isChecked={isComplete}
+                onClickHandler={onCompleteHandler}
+            />
 
             {isEdit && !isComplete ? (
                 <TextArea

@@ -10,24 +10,24 @@ const PomodoroItemsList = styled.ul`
 `;
 
 const PomodoroItem = styled.li`
-    width: 30px;
-    height: 30px;
+    width: var(--pomodoro-size);
+    height: var(--pomodoro-size);
     border-radius: 50%;
-    border: 2px solid white;
+    border: .125rem solid white;
     background-color: transparent;
     margin-block: 0;
-    margin-inline: 5px;
+    margin-inline: var(--unit-2);
 
 
-    @media ${({theme}) => theme.media.sm} {
-        width: 35px;
-        height: 35px;
-    }
-
-    @media ${({theme}) => theme.media.lg} {
-        width: 40px;
-        height: 40px;
-    }
+    // @media ${({theme}) => theme.media.sm} {
+    //     width: 2.25rem;
+    //     height: 2.25rem;
+    // }
+    //
+    // @media ${({theme}) => theme.media.lg} {
+    //     width: 2.5rem;
+    //     height: 2.5rem;
+    // }
 `;
 
 const PomodoroItemFill = styled(PomodoroItem)`

@@ -165,7 +165,7 @@ export const Settings = ({setShowSettings}: P) => {
                         id='sessionsBeforeRest'
                         name='sessionsBeforeRest'
                         min={2}
-                        max={16}
+                        max={4}
                         step={1}
                         label='Помидорки'
                         value={sessionsBeforeRest}

@@ -1,6 +1,6 @@
-import {ITheme} from '@/types/styled';
+import { DefaultTheme } from 'styled-components';
 
-export const baseTheme: ITheme = {
+export const baseTheme: DefaultTheme = {
     colors: {
         focus: '#bc4b51',
         break: '#5b8e7d',

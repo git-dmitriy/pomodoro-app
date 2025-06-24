@@ -2,15 +2,15 @@ import styled from 'styled-components';
 
 export const SettingsContainer = styled.div`
     margin-block: 0;
-    margin-inline: 0.5rem;
-    padding: 1.5rem;
+    margin-inline: var(--unit-2);
+    padding: var(--unit-5);
     background-color: #22333b;
-    border-radius: 1rem;
+    border-radius: var(--unit-4);
     font-size: 1.25rem;
 
     @media ${({theme}) => theme.media.sm} {
         margin: 0;
         font-size: 1.25rem;
-        padding: 1.5rem;
+        padding: var(--unit-5);
     }
 `;

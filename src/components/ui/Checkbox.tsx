@@ -1,6 +1,6 @@
-import { IoMdCheckmark } from 'react-icons/io';
+import {IoMdCheckmark} from 'react-icons/io';
 import styled from 'styled-components';
-import { Button } from '@/components/ui/Button';
+import {Button} from '@/components/ui/Button';
 
 const Frame = styled.div<{ $isChecked: boolean }>`
     border-radius: 50%;
@@ -25,12 +25,17 @@ const Frame = styled.div<{ $isChecked: boolean }>`
     }
 `;
 
-export const Checkbox = ({ $isChecked }: { $isChecked: boolean }) => {
-  return (
-    <Button>
-      <Frame $isChecked={$isChecked}>
-        <IoMdCheckmark />
-      </Frame>
-    </Button>
-  );
+type Props = {
+    $isChecked: boolean,
+    onClickHandler: () => void,
+}
+
+export const Checkbox = ({$isChecked, onClickHandler}: Props) => {
+    return (
+        <Button onClick={onClickHandler}>
+            <Frame $isChecked={$isChecked}>
+                <IoMdCheckmark/>
+            </Frame>
+        </Button>
+    );
 };

@@ -1,29 +1,22 @@
-import { ChangeEvent, KeyboardEvent, RefObject } from 'react';
+import {ChangeEvent, KeyboardEvent, RefObject} from 'react';
 import styled from 'styled-components';
 
 const TaskInputArea = styled.textarea`
+    inline-size: 100%;
     display: block;
-    inline-size: 15ch;
     color: white;
     resize: none;
     border: none;
     transition: color 0.3s;
     background-color: transparent;
-    border-block-end: 4px solid transparent;
+    border-block-end: var(--unit-1) solid transparent;
     margin: 0;
     padding: 0;
-    padding-block-end: 5px;
+    padding-block-start: var(--unit-2);
+    padding-block-end: var(--unit-2);
     line-height: 1.2;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
-
-    @media ${({theme}) => theme.media.sm} {
-        inline-size: 20ch;
-    }
-
-    @media ${({theme}) => theme.media.md} {
-        inline-size: 25ch;
-    }
 
     &::selection {
         background-color: #f4a259;
@@ -31,11 +24,11 @@ const TaskInputArea = styled.textarea`
 
     &:focus-visible {
         outline: none;
-        border-block-end: 4px solid rgba(0, 0, 0, 0.3);
+        border-block-end: var(--unit-1) solid rgba(0, 0, 0, 0.3);
     }
 
     &::-webkit-scrollbar {
-        inline-size: 0.5rem;
+        inline-size: var(--unit-2);
     }
 
     &::-webkit-scrollbar-track {
@@ -55,29 +48,30 @@ const TaskInputArea = styled.textarea`
 `;
 
 type P = {
-  content: string;
-  refElement: RefObject<HTMLTextAreaElement>;
-  onChangeHandler: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  onBlurHandler: () => void;
-  onKeyUpHandler: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
+    content: string;
+    refElement: RefObject<HTMLTextAreaElement>;
+    onChangeHandler: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+    onBlurHandler: () => void;
+    onKeyUpHandler: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
 };
 
 export const TextArea = ({
-  content,
-  refElement,
-  onChangeHandler,
-  onBlurHandler,
-  onKeyUpHandler,
-}: P) => {
-  return (
-    <TaskInputArea
-      ref={refElement}
-      value={content}
-      onChange={onChangeHandler}
-      onBlur={onBlurHandler}
-      onKeyDown={onKeyUpHandler}
-      autoFocus
-      rows={content.trim().length > 20 ? 2 : 1}
-    ></TaskInputArea>
-  );
+                             content,
+                             refElement,
+                             onChangeHandler,
+                             onBlurHandler,
+                             onKeyUpHandler,
+                         }: P) => {
+    return (
+        <TaskInputArea
+            ref={refElement}
+            value={content}
+            onChange={onChangeHandler}
+            onBlur={onBlurHandler}
+            onKeyDown={onKeyUpHandler}
+            autoFocus
+            rows={content.trim().length > 20 ? 2 : 1}
+            autoComplete="off"
+        ></TaskInputArea>
+    );
 };

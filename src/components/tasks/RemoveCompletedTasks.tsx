@@ -2,18 +2,17 @@ import {removeCompletedTasks} from '@/features/tasks/tasksSlice';
 import {MdDeleteSweep} from 'react-icons/md';
 import {Button} from '@/components/ui/Button';
 import {Tasks} from '@/features/tasks/types';
-import {FlexContainer} from '@/components/ui/FlexContainer';
 import styled from 'styled-components';
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 
-const Container = styled(FlexContainer)`
-    padding-inline-end: 5px;
 
-    @media ${({theme}) => theme.media.sm} {
-        padding-inline-end: 20px;
-    }
-`;
+const Container = styled.header`
+    grid-area: controls;
+    display: grid;
+    justify-items: end;
+    padding-inline: var(--unit-4);
+`
 
 export const RemoveCompletedTasks = () => {
     const dispatch = useAppDispatch();
@@ -22,7 +21,7 @@ export const RemoveCompletedTasks = () => {
     const removeCompleteTasksHandler = () => dispatch(removeCompletedTasks());
 
     return (
-        <Container $justifyContent='flex-end'>
+        <Container>
             {completed.length !== 0 ? (
                 <Button onClick={removeCompleteTasksHandler}>
                     <MdDeleteSweep/>

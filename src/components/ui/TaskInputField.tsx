@@ -9,16 +9,17 @@ type P = {
 };
 
 const Label = styled.label`
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    border: 0;
-    padding: 0;
-    white-space: nowrap;
-    clip-path: inset(100%);
-    clip: rect(0 0 0 0);
-    overflow: hidden;
+    //position: absolute;
+    //width: 1px;
+    //height: 1px;
+    //margin: -1px;
+    //border: 0;
+    //padding: 0;
+    //white-space: nowrap;
+    //clip-path: inset(100%);
+    //clip: rect(0 0 0 0);
+    //overflow: hidden;
+    display: block;
 `;
 
 const FieldGroup = styled.div`
@@ -27,27 +28,30 @@ const FieldGroup = styled.div`
     align-items: center;
 
     & > * + * {
-        margin-inline-start: 5px;
+        margin-inline-start:  var(--unit-2);
     }
 `;
 
 const Input = styled.input`
     border-radius: 1.25rem;
     font-size: 1.3rem;
-    padding-block: 5px;
-    padding-inline: 10px;
+    padding-block: var(--unit-2);
+    padding-inline: var(--unit-3);
     background-color: rgba(0, 0, 0, 0.2);
     border: none;
     color: white;
-    inline-size: 12.5rem;
-
-    @media ${({theme}) => theme.media.sm} {
-        inline-size: 15.625rem;
-    }
-
-    @media ${({theme}) => theme.media.xl} {
-        inline-size: 18.75rem;
-    }
+    inline-size: 100%;
+    //inline-size: 12.5rem; // 200px
+    
+    // // todo: refactor this styles
+    //
+    // @media ${({theme}) => theme.media.sm} {
+    //     inline-size: 15.625rem;
+    // }
+    //
+    // @media ${({theme}) => theme.media.xl} {
+    //     inline-size: 18.75rem;
+    // }
 `;
 
 export const TaskInputField = ({label, value, onChange}: P) => {

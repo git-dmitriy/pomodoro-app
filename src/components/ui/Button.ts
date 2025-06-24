@@ -2,9 +2,7 @@ import styled from 'styled-components';
 
 export const Button = styled.button`
     border-radius: 100%;
-    min-width: 2.4rem;
-    min-height: 2.4rem;
-    font-size: 1.6rem;
+    font-size: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,11 +11,9 @@ export const Button = styled.button`
     border: none;
     transition: background-color 0.3s, opacity 0.3s, transform 0.2s;
     cursor: pointer;
-    padding: 0;
+    padding: var(--unit-3);
 
     @media ${({theme}) => theme.media.sm} {
-        min-width: 3.125rem;
-        min-height: 3.125rem;
         font-size: 2.1875rem;
     }
 

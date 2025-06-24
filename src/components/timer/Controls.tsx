@@ -19,7 +19,7 @@ export const Controls = ({
     const {isRunning} = useAppSelector((state) => state.timer);
 
     return (
-        <FlexContainer $alignItems='center' $gap='5px'>
+        <FlexContainer $alignItems='center' $gap='.375rem'>
             {isRunning ? (
                 <Button onClick={pauseHandler}>
                     <FaPause/>

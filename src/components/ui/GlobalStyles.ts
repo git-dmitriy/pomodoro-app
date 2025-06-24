@@ -26,6 +26,33 @@ export const GlobalStyles = createGlobalStyle<P>`
     }
 
     :root {
+
+        --bg-focus: #bc4b51;
+        --bg-break: #5b8e7d;
+        --bg-rest: #8cb369;
+        --bg-standby: #22333b;
+        
+        // todo: convert pixels to rems
+        --unit-1: 4px; //4px;
+        --unit-2: 8px; //8px;
+        --unit-3: 12px; //12px;
+        --unit-4: 16px; //16px;
+        --unit-5: 24px; //24px;
+        --unit-6: 32px; //32px;
+        --unit-7: 40px; //40px;
+        --unit-8: 48px; //48px;
+        
+        --unit--7: -40px;
+        
+        --pomodoro-size: 30px;
+        --button-size: 50px;
+        
+        --task-fs-1: 30px;
+        --task-fs-2: 30px;
+        --task-fs-3: 36px;
+        --heading-fs: 3rem;
+        
+        
         scrollbar-width: thin;
         scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s;
@@ -53,8 +80,9 @@ export const GlobalStyles = createGlobalStyle<P>`
     body {
         min-block-size: 100vh;
         scroll-behavior: smooth;
+        overscroll-behavior: contain;
         text-rendering: optimizeSpeed;
-        line-height: 1.5;
+        line-height: 1.2;
         font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas',
         'Liberation Mono', 'Courier New', monospace;
         color: white;
