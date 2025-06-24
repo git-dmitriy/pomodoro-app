@@ -6,8 +6,6 @@ import {ClockDial} from '@/components/timer/ClockDial';
 import {Controls} from '@/components/timer/Controls';
 import {Button} from '@/components/ui/Button';
 import {Backdrop} from '@/components/ui/Backdrop';
-import {FlexContainer} from '@/components/ui/FlexContainer';
-import {AddTaskForm} from '@/components/tasks/AddTaskForm';
 import {RiSettings4Fill} from 'react-icons/ri';
 import {Config} from '@/features/timer/types';
 import {useLocalStorage} from "@/hooks/useLocalStorage";
@@ -15,6 +13,8 @@ import {createPortal} from "react-dom";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 
+import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
+import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
 
 export const TimerContainer = () => {
     const dispatch = useAppDispatch();
@@ -100,36 +100,32 @@ export const TimerContainer = () => {
     };
 
     return (
-        <FlexContainer
-            $direction='column'
-            $alignItems='center'
-            $paddingBlock='20px'
-            $paddingInline='20px'
-            $gap='10px'
-        >
-            <Button onClick={toggleSettings}>
-                <RiSettings4Fill/>
-            </Button>
+        <>
 
-            <ClockDial time={timeLeft}/>
+            <ProgressRing timeLeft={timeLeft}>
+                <Button onClick={toggleSettings}>
+                    <RiSettings4Fill/>
+                </Button>
 
-            <Sessions/>
+                <ClockDial time={timeLeft}/>
 
-            <Controls
-                startHandler={startHandler}
-                pauseHandler={pauseHandler}
-                resetHandler={resetHandler}
-                switchToNextSession={switchToNextSession}
-            />
-            <AddTaskForm/>
+                <Sessions/>
 
-            {showSettings && createPortal(
-                <>
+                <Controls
+                    startHandler={startHandler}
+                    pauseHandler={pauseHandler}
+                    resetHandler={resetHandler}
+                    switchToNextSession={switchToNextSession}
+                />
+
+                <ShowTasksBtn />
+
+                {showSettings && createPortal(
                     <Backdrop>
                         <Settings setShowSettings={setShowSettings}/>
-                    </Backdrop>
-                </>, document.body)}
+                    </Backdrop>, document.body)}
 
-        </FlexContainer>
+            </ProgressRing>
+        </>
     );
 };
