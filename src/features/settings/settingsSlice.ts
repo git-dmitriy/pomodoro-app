@@ -1,12 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit'
-import {SettingsState} from "@/features/settings/types.ts";
-
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {Config, SettingsState} from "@/features/settings/types.ts";
 
 
 export const settingsSlice = createSlice({
     name: 'settings',
     initialState: {
         showTasks: false,
+        config: {
+            timing: {
+                focus: 25,
+                rest: 15,
+                break: 5,
+            },
+            sessions: 4,
+        },
     } as SettingsState,
     reducers: {
         showTasks: (state) => {
@@ -14,10 +21,13 @@ export const settingsSlice = createSlice({
         },
         hideTasks: (state) => {
             state.showTasks = false;
-        }
+        },
+        setSettings: (state, action: PayloadAction<Config>) => {
+            state.config = action.payload;
+        },
     },
 })
 
-export const { showTasks, hideTasks } = settingsSlice.actions
+export const {showTasks, hideTasks, setSettings} = settingsSlice.actions
 
 export default settingsSlice.reducer
