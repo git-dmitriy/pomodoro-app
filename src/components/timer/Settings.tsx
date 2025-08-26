@@ -6,8 +6,7 @@ import {
     ChangeEvent,
     SyntheticEvent,
 } from 'react';
-import {init, setSettings} from '@/features/timer/timerSlice';
-import {Config, Session} from '@/features/timer/types';
+import {Config} from '@/features/timer/types';
 import {InputNumber} from '@/components/ui/InputNumber';
 import {Button} from '@/components/ui/Button';
 import {FaSave} from 'react-icons/fa';
@@ -18,94 +17,97 @@ import {FlexContainer} from '@/components/ui/FlexContainer';
 import {useLocalStorage} from "@/hooks/useLocalStorage";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
+import * as settings from '@/features/settings/settingsSlice';
+import * as timer from "@/features/timer/timerSlice.ts";
 
 type P = {
     setShowSettings: Dispatch<SetStateAction<boolean>>;
 };
 
 export const Settings = ({setShowSettings}: P) => {
-    const {config} = useAppSelector((state) => state.timer);
+    const {config} = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
-    const [timing, setTiming] = useState(config.timing);
-    const [sessions, setSessions] = useState(config.sessions);
-    const [sessionsBeforeRest, setSessionsBeforeRest] = useState(
-        config.sessionsBeforeRest
-    );
+    const maxSessionsLimit = 4;
+    const minSessionsLimit = 2;
+    const minTimeLimit = 5;
+    const maxTimeLimit = 60;
 
-    const [localConfig, setLocalConfig] = useLocalStorage<Config>('config', {
-        timing,
-        sessionsBeforeRest,
-        sessions,
-    });
+    const [localConfig, setLocalConfig] = useLocalStorage<Config>('config', config);
+    const [timing, setTiming] = useState(localConfig.timing);
+    const [sessions, setSessions] = useState(config.sessions);
 
     useEffect(() => {
-        setSessions(generateSessions(sessionsBeforeRest));
-        dispatch(setSettings(localConfig));
-        dispatch(init(localConfig));
-
-
         document.addEventListener("keyup", handleEscEvent);
 
         return () => {
             document.removeEventListener('keyup', handleEscEvent);
         }
-    }, [sessionsBeforeRest, localConfig]);
+    }, []);
 
-    const handleEscEvent = (event) => {
+    const handleEscEvent = (event:KeyboardEvent) => {
         if (event.key === 'Escape') {
             closeSettings();
         }
     }
-
-    const generateSessions = (num: number): Session[] => {
-        const sessions = [] as Session[];
-        for (let i = 0; i < num; i++) {
-            sessions.push('focus', 'break');
-        }
-        sessions.splice(-1, 1, 'rest');
-        return sessions;
-    };
 
     const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
         if (
             e.target.value.trim().length !== 0 &&
             typeof parseInt(e.target.value, 10) === 'number'
         ) {
-            if (parseInt(e.target.value, 10) < 5) {
-                setTiming({...timing, [e.target.name]: 5});
-            } else if (parseInt(e.target.value, 10) > 60) {
-                setTiming({...timing, [e.target.name]: 60});
+            if (parseInt(e.target.value, 10) < minTimeLimit) {
+                setTiming({...timing, [e.target.name]: minTimeLimit});
+            } else if (parseInt(e.target.value, 10) > maxTimeLimit) {
+                setTiming({...timing, [e.target.name]: maxTimeLimit});
             } else {
                 setTiming({...timing, [e.target.name]: parseInt(e.target.value, 10)});
             }
         }
     };
 
-    const onChangeSessionsBeforeRestHandler = (
+    const onChangeSessionsHandler = (
         e: ChangeEvent<HTMLInputElement>
     ) => {
         if (
             e.target.value.trim().length !== 0 &&
             typeof parseInt(e.target.value, 10) === 'number'
         ) {
-            if (parseInt(e.target.value, 10) < 2) {
-                setSessionsBeforeRest(2);
-            } else if (parseInt(e.target.value, 10) > 16) {
-                setSessionsBeforeRest(16);
+
+            // todo: create checkLimits helper
+            /* checkLimits({value, max, min})
+            *
+            * */
+            if (parseInt(e.target.value, 10) < minSessionsLimit) {
+                setSessions(minSessionsLimit);
+            } else if (parseInt(e.target.value, 10) > maxSessionsLimit) {
+                setSessions(maxSessionsLimit);
             } else {
-                setSessionsBeforeRest(parseInt(e.target.value, 10));
+                setSessions(parseInt(e.target.value, 10));
             }
         }
     };
 
     const onSubmitHandler = (e: SyntheticEvent) => {
         e.preventDefault();
+        dispatch(settings.setSettings({
+            timing,
+            sessions
+        }))
+
+        // todo: возможно, лучше перенести это в listener middleware
         setLocalConfig({
             timing,
-            sessionsBeforeRest,
             sessions,
         });
+
+        dispatch(timer.init({
+            secondsLeft: timing.focus * 60,
+            mode: 'focus',
+            totalSessions: sessions * 2,
+            currentSession: 1,
+            isRunning: false,
+        }))
     };
 
     const closeSettings = () => {
@@ -131,8 +133,8 @@ export const Settings = ({setShowSettings}: P) => {
                     <InputNumber
                         id='focus'
                         name='focus'
-                        min={5}
-                        max={60}
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
                         step={5}
                         label='Фокусировка'
                         value={timing.focus}
@@ -141,8 +143,8 @@ export const Settings = ({setShowSettings}: P) => {
                     <InputNumber
                         id='break'
                         name='break'
-                        min={5}
-                        max={60}
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
                         step={5}
                         label='Перерыв'
                         value={timing.break}
@@ -151,8 +153,8 @@ export const Settings = ({setShowSettings}: P) => {
                     <InputNumber
                         id='rest'
                         name='rest'
-                        min={5}
-                        max={60}
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
                         step={5}
                         label='Отдых'
                         value={timing.rest}
@@ -162,14 +164,14 @@ export const Settings = ({setShowSettings}: P) => {
 
                 <Fieldset legend='Количество сессий:'>
                     <InputNumber
-                        id='sessionsBeforeRest'
-                        name='sessionsBeforeRest'
-                        min={2}
-                        max={4}
+                        id='sessions'
+                        name='sessions'
+                        min={minSessionsLimit}
+                        max={maxSessionsLimit}
                         step={1}
                         label='Помидорки'
-                        value={sessionsBeforeRest}
-                        onChangeHandler={onChangeSessionsBeforeRestHandler}
+                        value={sessions}
+                        onChangeHandler={onChangeSessionsHandler}
                     />
                 </Fieldset>
             </form>

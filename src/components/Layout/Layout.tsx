@@ -25,13 +25,13 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = ({children}) => {
-    const {isRunning, currentSession} = useAppSelector((state) => state.timer);
+    const {isRunning, mode} = useAppSelector((state) => state.timer);
     const isTasksShown = useSelector((state: RootState) => state.settings.showTasks);
-    const backgroundColor = isRunning ? currentSession : 'standby';
+    const backgroundColor = isRunning ? mode : 'standby';
 
     return (
         <StyledLayout $taskShown={isTasksShown}>
-            <GlobalStyles bg={backgroundColor}/>
+            <GlobalStyles $bg={backgroundColor}/>
             {children}
         </StyledLayout>
     );

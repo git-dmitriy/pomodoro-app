@@ -2,7 +2,7 @@ import {createGlobalStyle} from 'styled-components';
 import {baseTheme} from '@/config/baseTheme.ts';
 
 type P = {
-    bg: 'focus' | 'break' | 'rest' | 'standby';
+    $bg: 'focus' | 'break' | 'rest' | 'standby';
 };
 
 const handleColorType = (color: string) => {
@@ -56,7 +56,8 @@ export const GlobalStyles = createGlobalStyle<P>`
         scrollbar-width: thin;
         scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s;
-        background-color: ${(props) => handleColorType(props.bg)};
+        background-color: ${(props) => handleColorType(props.$bg)};
+        background-color: ${(props) => `--bg-${props.$bg}`};
     }
 
     ::-webkit-scrollbar {
