@@ -16,7 +16,6 @@ const Container = styled.article`
         --radius: calc((var(--size) - var(--stroke-width)) / 2);
         --circumference: calc(var(--radius) * pi * 2);
         --dash: calc((var(--progress) * var(--circumference)) / 100);
-        animation: progress-animation 5s linear 0s 1 forwards;
         pointer-events: none;
 
         position: absolute;
@@ -39,7 +38,7 @@ const Container = styled.article`
             transform: rotate(-90deg);
             transform-origin: var(--half-size) var(--half-size);
             stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
-            transition: stroke-dasharray 0.3s linear 0s;
+            transition: stroke-dasharray 0.1s linear 0s;
             stroke: white;
         }
     }
@@ -47,21 +46,22 @@ const Container = styled.article`
 
 type Props = {
     children?: React.ReactNode,
-    timeLeft: number
+    timeLeft: number;
+    totalTime: number;
+    isRunning: boolean;
 };
 
-export const ProgressRing: React.FC<Props> = ({children, timeLeft}) => {
+export const ProgressRing: React.FC<Props> = ({children, timeLeft, totalTime, isRunning}) => {
 
+    let progress;
 
-    // const {}
-    // получить оставшееся время
-    // рассчитать процент и передать его в переменную
-
-    const progress =  300 / timeLeft * 100 - 100;
-
+    if (!isRunning && timeLeft === totalTime) {
+        progress = 100;
+    } else {
+        progress = (timeLeft / totalTime * 100);
+    }
 
     return (
-
         <Container>
             <svg
                 viewBox="0 0 250 250"
