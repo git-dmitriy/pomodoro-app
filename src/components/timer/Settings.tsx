@@ -19,6 +19,7 @@ import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
 import * as timer from "@/features/timer/timerSlice.ts";
+import {checkLimits} from "@/utils";
 
 type P = {
     setShowSettings: Dispatch<SetStateAction<boolean>>;
@@ -45,7 +46,7 @@ export const Settings = ({setShowSettings}: P) => {
         }
     }, []);
 
-    const handleEscEvent = (event:KeyboardEvent) => {
+    const handleEscEvent = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
             closeSettings();
         }
@@ -56,13 +57,14 @@ export const Settings = ({setShowSettings}: P) => {
             e.target.value.trim().length !== 0 &&
             typeof parseInt(e.target.value, 10) === 'number'
         ) {
-            if (parseInt(e.target.value, 10) < minTimeLimit) {
-                setTiming({...timing, [e.target.name]: minTimeLimit});
-            } else if (parseInt(e.target.value, 10) > maxTimeLimit) {
-                setTiming({...timing, [e.target.name]: maxTimeLimit});
-            } else {
-                setTiming({...timing, [e.target.name]: parseInt(e.target.value, 10)});
-            }
+            setTiming({
+                ...timing,
+                [e.target.name]: checkLimits({
+                    value: parseInt(e.target.value, 10),
+                    min: minTimeLimit,
+                    max: maxTimeLimit
+                })
+            })
         }
     };
 
@@ -73,18 +75,11 @@ export const Settings = ({setShowSettings}: P) => {
             e.target.value.trim().length !== 0 &&
             typeof parseInt(e.target.value, 10) === 'number'
         ) {
-
-            // todo: create checkLimits helper
-            /* checkLimits({value, max, min})
-            *
-            * */
-            if (parseInt(e.target.value, 10) < minSessionsLimit) {
-                setSessions(minSessionsLimit);
-            } else if (parseInt(e.target.value, 10) > maxSessionsLimit) {
-                setSessions(maxSessionsLimit);
-            } else {
-                setSessions(parseInt(e.target.value, 10));
-            }
+            setSessions(checkLimits({
+                value: parseInt(e.target.value, 10),
+                max: maxSessionsLimit,
+                min: minSessionsLimit,
+            }));
         }
     };
 
