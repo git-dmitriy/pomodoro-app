@@ -5,6 +5,7 @@ export const timerSlice = createSlice({
     name: 'timer',
     initialState: {
         secondsLeft: 0,
+        totalSeconds: 0,
         mode: 'focus',
         totalSessions: 8,
         currentSession: 1,
@@ -12,12 +13,13 @@ export const timerSlice = createSlice({
     } as Timer,
 
     reducers: {
-        init: (state, action: PayloadAction<Timer>) => {
-            state.secondsLeft = action.payload.secondsLeft;
-            state.mode = action.payload.mode;
-            state.totalSessions = action.payload.totalSessions;
-            state.currentSession = action.payload.currentSession;
-            state.isRunning = action.payload.isRunning;
+        init: (state, action: PayloadAction<Config>) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
+            state.isRunning = false;
         },
 
         start: (state) => {
@@ -40,21 +42,25 @@ export const timerSlice = createSlice({
                 if (state.currentSession === state.totalSessions) {
                     state.mode = 'rest';
                     state.secondsLeft = action.payload.timing.rest * 60;
+                    state.totalSeconds = action.payload.timing.rest * 60;
                 } else if (state.currentSession % 2 === 0) {
                     state.mode = 'break';
                     state.secondsLeft = action.payload.timing.break * 60;
+                    state.totalSeconds = action.payload.timing.break * 60;
                 } else {
                     state.mode = 'focus';
                     state.secondsLeft = action.payload.timing.focus * 60;
+                    state.totalSeconds = action.payload.timing.focus * 60;
                 }
             }
         },
 
-        cycleComplete: (state, action: PayloadAction<Timer>) => {
-            state.secondsLeft = action.payload.secondsLeft;
-            state.mode = action.payload.mode;
-            state.totalSessions = action.payload.totalSessions;
-            state.currentSession = action.payload.currentSession;
+        cycleComplete: (state, action: PayloadAction<Config >) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
             state.isRunning = false;
         },
     },

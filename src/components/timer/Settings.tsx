@@ -102,11 +102,8 @@ export const Settings = ({setShowSettings}: P) => {
         });
 
         dispatch(timer.init({
-            secondsLeft: timing.focus * 60,
-            mode: 'focus',
-            totalSessions: sessions * 2,
-            currentSession: 1,
-            isRunning: false,
+            timing,
+            sessions
         }))
     };
 

@@ -1,4 +1,3 @@
-export type Session = number
 type FocusSession = 25 | number;
 type BreakTime = 5 | number;
 type RestTime = 15 | number;
@@ -10,8 +9,8 @@ export type Timing = {
 };
 
 export type Timer = {
-
     secondsLeft: number,
+    totalSeconds: number,
     mode: 'focus' | 'break' | 'rest',
     totalSessions: number,
     currentSession: number,

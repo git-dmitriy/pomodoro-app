@@ -1,5 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 import * as timer from '@/features/timer/timerSlice';
+import * as settings from '@/features/settings/settingsSlice';
 import {Sessions} from '@/components/timer/Sessions';
 import {ClockDial} from '@/components/timer/ClockDial';
 import {Controls} from '@/components/timer/Controls';
@@ -30,6 +31,7 @@ export const TimerContainer = () => {
 
     const {
         secondsLeft,
+        totalSeconds,
         totalSessions,
         currentSession,
         isRunning
@@ -46,22 +48,12 @@ export const TimerContainer = () => {
     useEffect(() => {
 
         if (firstRender.current) {
+
             if (localConfig) {
-                dispatch(timer.init({
-                    secondsLeft: localConfig.timing.focus * 60,
-                    mode: 'focus',
-                    totalSessions: localConfig.sessions * 2,
-                    currentSession: 1,
-                    isRunning: false,
-                }));
+                dispatch(timer.init(localConfig));
+                dispatch(settings.setSettings(localConfig))
             } else {
-                dispatch(timer.init({
-                    secondsLeft: config.timing.focus * 60,
-                    mode: 'focus',
-                    totalSessions: config.sessions * 2,
-                    currentSession: 1,
-                    isRunning: false,
-                }))
+                dispatch(timer.init(config))
             }
             firstRender.current = false;
         }
@@ -78,7 +70,7 @@ export const TimerContainer = () => {
                 }
             }
         }
-    }, [isRunning, secondsLeft, dispatch]);
+    }, [isRunning, secondsLeft, localConfig, config, dispatch]);
 
     const toggleSettings = () => {
         setShowSettings(!showSettings);
@@ -106,25 +98,13 @@ export const TimerContainer = () => {
         if (workerRef.current) {
             workerRef.current.postMessage({message: 'stop'});
 
-            dispatch(timer.init({
-                secondsLeft: config.timing.focus * 60,
-                mode: 'focus',
-                totalSessions: config.sessions * 2,
-                currentSession: 1,
-                isRunning: false,
-            }))
+            dispatch(timer.init(config))
         }
     };
 
     const switchToNextSession = () => {
         if (currentSession === totalSessions) {
-            dispatch(timer.cycleComplete({
-                secondsLeft: config.timing.focus * 60,
-                mode: 'focus',
-                totalSessions: config.sessions * 2,
-                currentSession: 1,
-                isRunning: false,
-            }));
+            dispatch(timer.cycleComplete(config));
         } else {
             dispatch(timer.nextSession(config));
         }
@@ -132,7 +112,11 @@ export const TimerContainer = () => {
 
     return (
         <>
-            <ProgressRing timeLeft={secondsLeft}>
+            <ProgressRing
+                timeLeft={secondsLeft}
+                isRunning={isRunning}
+                totalTime={totalSeconds}
+            >
                 <Button onClick={toggleSettings}>
                     <RiSettings4Fill/>
                 </Button>
