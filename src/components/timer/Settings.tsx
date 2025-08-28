@@ -19,7 +19,7 @@ import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
 import * as timer from "@/features/timer/timerSlice.ts";
-import {checkLimits} from "@/utils";
+import {checkLimits} from "@/utils/checkLimits";
 
 type P = {
     setShowSettings: Dispatch<SetStateAction<boolean>>;
