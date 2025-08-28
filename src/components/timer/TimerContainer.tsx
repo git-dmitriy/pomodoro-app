@@ -26,7 +26,6 @@ if (typeof window !== 'undefined') {
 
 export const TimerContainer = () => {
     const dispatch = useAppDispatch();
-    const [showSettings, setShowSettings] = useState(false);
     const firstRender = useRef(true);
 
     const {
@@ -38,7 +37,7 @@ export const TimerContainer = () => {
     } = useAppSelector(
         (state) => state.timer
     );
-    const {config} = useAppSelector((state) => state.settings);
+    const {config, showSettings} = useAppSelector((state) => state.settings);
 
     const workerRef = useRef<unknown>(null);
     const [localConfig ] = useLocalStorage<Config | null>('config', null );
@@ -51,7 +50,7 @@ export const TimerContainer = () => {
 
             if (localConfig) {
                 dispatch(timer.init(localConfig));
-                dispatch(settings.setSettings(localConfig))
+                dispatch(settings.loadSettings(localConfig))
             } else {
                 dispatch(timer.init(config))
             }
@@ -73,7 +72,7 @@ export const TimerContainer = () => {
     }, [isRunning, secondsLeft, localConfig, config, dispatch]);
 
     const toggleSettings = () => {
-        setShowSettings(!showSettings);
+        dispatch(settings.openSettings())
     };
 
     const startHandler = () => {
@@ -135,7 +134,7 @@ export const TimerContainer = () => {
 
                 {showSettings && createPortal(
                     <Backdrop>
-                        <Settings setShowSettings={setShowSettings}/>
+                        <Settings/>
                     </Backdrop>, document.body)}
             </ProgressRing>
         </>

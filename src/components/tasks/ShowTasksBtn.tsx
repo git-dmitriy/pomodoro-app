@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {Button} from "@/components/ui/Button.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
-import {hideTasks, showTasks} from "@/features/settings/settingsSlice.ts";
+import {openTasks, closeTasks} from "@/features/settings/settingsSlice.ts";
 
 const CustomButton = styled(Button)`
     border-radius: var(--unit-2);
@@ -18,11 +18,11 @@ export const ShowTasksBtn = () => {
 
         <>
             {isTaskShown ? (
-                <CustomButton onClick={() => dispatch(hideTasks())}>
+                <CustomButton onClick={() => dispatch(closeTasks())}>
                     Скрыть задачи
                 </CustomButton>
             ) : (
-                <CustomButton onClick={() => dispatch(showTasks())}>
+                <CustomButton onClick={() => dispatch(openTasks())}>
                     Показать задачи
                 </CustomButton>
             )}

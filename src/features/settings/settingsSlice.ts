@@ -6,6 +6,8 @@ export const settingsSlice = createSlice({
     name: 'settings',
     initialState: {
         showTasks: false,
+        showSettings: false,
+        isSoundOn: true,
         config: {
             timing: {
                 focus: 25,
@@ -16,18 +18,38 @@ export const settingsSlice = createSlice({
         },
     } as SettingsState,
     reducers: {
-        showTasks: (state) => {
+        openTasks: (state) => {
             state.showTasks = true;
         },
-        hideTasks: (state) => {
+        closeTasks: (state) => {
             state.showTasks = false;
+        },
+        openSettings: (state) => {
+            state.showSettings = true;
+        },
+        closeSettings: (state) => {
+            state.showSettings = false;
         },
         setSettings: (state, action: PayloadAction<Config>) => {
             state.config = action.payload;
         },
+        loadSettings: (state, action: PayloadAction<Config>) => {
+            state.config = action.payload;
+        },
+        setSoundSettings: (state, action: PayloadAction<boolean>) => {
+            state.isSoundOn = action.payload;
+        }
     },
 })
 
-export const {showTasks, hideTasks, setSettings} = settingsSlice.actions
+export const {
+    openTasks,
+    closeTasks,
+    openSettings,
+    closeSettings,
+    setSettings,
+    loadSettings,
+    setSoundSettings,
+} = settingsSlice.actions
 
 export default settingsSlice.reducer

@@ -1,5 +1,7 @@
 export interface SettingsState {
     showTasks: boolean,
+    showSettings: boolean,
+    isSoundOn: boolean,
     config: Config,
 }
 

@@ -1,8 +1,6 @@
 import {
     useState,
     useEffect,
-    Dispatch,
-    SetStateAction,
     ChangeEvent,
     SyntheticEvent,
 } from 'react';
@@ -20,13 +18,10 @@ import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
 import * as timer from "@/features/timer/timerSlice.ts";
 import {checkLimits} from "@/utils/checkLimits";
+import {Checkbox} from "@/components/ui/Checkbox.tsx";
 
-type P = {
-    setShowSettings: Dispatch<SetStateAction<boolean>>;
-};
-
-export const Settings = ({setShowSettings}: P) => {
-    const {config} = useAppSelector((state) => state.settings);
+export const Settings = () => {
+    const {config, isSoundOn} = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
     const maxSessionsLimit = 4;
@@ -46,8 +41,8 @@ export const Settings = ({setShowSettings}: P) => {
         }
     }, []);
 
-    const handleEscEvent = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
+    const handleEscEvent = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
             closeSettings();
         }
     }
@@ -103,8 +98,12 @@ export const Settings = ({setShowSettings}: P) => {
     };
 
     const closeSettings = () => {
-        setShowSettings(false);
+        dispatch(settings.closeSettings());
     };
+
+    function onChangeSounds() {
+        dispatch(settings.setSoundSettings(!isSoundOn));
+    }
 
     return (
         <SettingsContainer>
@@ -165,6 +164,15 @@ export const Settings = ({setShowSettings}: P) => {
                         value={sessions}
                         onChangeHandler={onChangeSessionsHandler}
                     />
+                </Fieldset>
+                <Fieldset legend='Звук:'>
+                    <FlexContainer $gap={'var(--unit-2)'}>
+                        <Checkbox
+                            $isChecked={isSoundOn}
+                            onClickHandler={onChangeSounds}
+                        />
+                        <p>Включить звук</p>
+                    </FlexContainer>
                 </Fieldset>
             </form>
         </SettingsContainer>
