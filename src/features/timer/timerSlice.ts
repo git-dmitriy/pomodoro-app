@@ -55,6 +55,15 @@ export const timerSlice = createSlice({
             }
         },
 
+        reset: (state, action: PayloadAction<Config>) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
+            state.isRunning = false;
+        },
+
         cycleComplete: (state, action: PayloadAction<Config >) => {
             state.secondsLeft = action.payload.timing.focus * 60;
             state.totalSeconds = action.payload.timing.focus * 60;
@@ -69,10 +78,11 @@ export const timerSlice = createSlice({
 export const {
     init,
     start,
-    tick,
     pause,
-    cycleComplete,
+    tick,
     nextSession,
+    reset,
+    cycleComplete,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;

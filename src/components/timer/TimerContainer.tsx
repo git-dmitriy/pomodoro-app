@@ -97,8 +97,7 @@ export const TimerContainer = () => {
     const resetHandler = () => {
         if (workerRef.current) {
             workerRef.current.postMessage({message: 'stop'});
-
-            dispatch(timer.init(config))
+            dispatch(timer.reset(config));
         }
     };
 
