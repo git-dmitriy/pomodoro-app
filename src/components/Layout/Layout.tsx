@@ -3,6 +3,7 @@ import {GlobalStyles} from '@/components/ui/GlobalStyles';
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store";
+import {Toaster} from "react-hot-toast";
 
 const StyledLayout = styled.main<{ $taskShown: boolean }>`
     inline-size: 86vw;
@@ -33,6 +34,7 @@ export const Layout: React.FC<Props> = ({children}) => {
         <StyledLayout $taskShown={isTasksShown}>
             <GlobalStyles $bg={backgroundColor}/>
             {children}
+            <Toaster position="top-right"/>
         </StyledLayout>
     );
 };

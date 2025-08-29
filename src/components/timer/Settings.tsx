@@ -89,11 +89,13 @@ export const Settings = () => {
         setLocalConfig({
             timing,
             sessions,
+            isSoundOn,
         });
 
         dispatch(timer.init({
             timing,
-            sessions
+            sessions,
+            isSoundOn,
         }))
     };
 

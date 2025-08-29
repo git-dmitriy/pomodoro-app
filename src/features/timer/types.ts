@@ -20,4 +20,5 @@ export type Timer = {
 export type Config = {
     timing: Timing,
     sessions: number,
+    isSoundOn: boolean,
 }
