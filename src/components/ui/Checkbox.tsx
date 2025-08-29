@@ -32,7 +32,7 @@ type Props = {
 
 export const Checkbox = ({$isChecked, onClickHandler}: Props) => {
     return (
-        <Button onClick={onClickHandler}>
+        <Button onClick={onClickHandler} type='button'>
             <Frame $isChecked={$isChecked}>
                 <IoMdCheckmark/>
             </Frame>
