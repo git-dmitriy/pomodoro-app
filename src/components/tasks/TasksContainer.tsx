@@ -2,8 +2,12 @@ import {RemoveCompletedTasks} from '@/components/tasks/RemoveCompletedTasks';
 import {TasksList} from '@/components/tasks/tasksList';
 import styled from "styled-components";
 import {AddTaskForm} from "@/components/tasks/AddTaskForm.tsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
+import {useLocalStorage} from "@/hooks/useLocalStorage";
+import {useEffect} from "react";
+import * as tasks from '@/features/tasks/tasksSlice';
+import {TaskItem} from "@/features/tasks/types.ts";
 
 const Container = styled.article`
     inline-size: 100%;
@@ -31,10 +35,18 @@ const TaskHeading = styled.h2`
 `;
 
 export const TasksContainer = () => {
-    // const tasks = useAppSelector((state: Tasks) => state.tasks);
 
-    const showTasks = useSelector((state: RootState) => state.settings.showTasks)
-    const {tasks} = useSelector((state:RootState) => state);
+    const dispatch = useDispatch();
+    const showTasks = useSelector((state: RootState) => state.settings.showTasks);
+    const storeTasks = useSelector((state: RootState) => state.tasks);
+    const [localTasks] = useLocalStorage<TaskItem[] | null>('tasks', null);
+
+    useEffect(() => {
+        if (localTasks) {
+            dispatch(tasks.loadTasks(localTasks));
+        }
+    }, [])
+
 
     if (!showTasks) {
         return null;
@@ -43,11 +55,11 @@ export const TasksContainer = () => {
     return (
         <Container>
             <TasksHeader>
-                <TaskHeading>Задачи ({tasks.length})</TaskHeading>
+                <TaskHeading>Задачи ({storeTasks.length})</TaskHeading>
                 <RemoveCompletedTasks/>
                 <AddTaskForm/>
             </TasksHeader>
-            <TasksList tasks={tasks} />
+            <TasksList tasks={storeTasks}/>
         </Container>
     );
 };

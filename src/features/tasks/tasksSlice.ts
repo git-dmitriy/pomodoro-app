@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {TaskItem} from '@/features/tasks/types';
 
 export const tasksSlice = createSlice({
-    name: 'taskList',
+    name: 'tasks',
     initialState: [] as TaskItem[],
     reducers: {
         createTask: (state, action: PayloadAction<TaskItem>) => {
@@ -22,7 +22,7 @@ export const tasksSlice = createSlice({
             }
         },
         loadTasks: (state, action: PayloadAction<TaskItem[]>) => {
-            return state.concat(...action.payload);
+           return action.payload;
         },
         removeCompletedTasks: (state) =>
             state.filter((task) => task.isComplete === false),
