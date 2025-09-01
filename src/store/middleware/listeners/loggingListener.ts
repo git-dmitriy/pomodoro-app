@@ -1,7 +1,6 @@
 import {Action, isAnyOf} from '@reduxjs/toolkit';
 import {cycleComplete, nextSession, pause, start, reset} from "@/features/timer/timerSlice.ts";
 import {openTasks, closeTasks, openSettings, closeSettings, setSettings} from "@/features/settings/settingsSlice.ts";
-
 import {loadAudio} from "@/utils/loadAudio";
 import startAudio from '@/assets/sounds/start.mp3'
 import stopAudio from '@/assets/sounds/pause.mp3'
@@ -10,8 +9,8 @@ import resetAudio from '@/assets/sounds/reset.mp3'
 import cycleCompleteAudio from '@/assets/sounds/cycle-complete.mp3'
 import buttonSoftAudio from '@/assets/sounds/button_soft.mp3'
 import {createTask, removeCompletedTasks, removeTask, updateTask} from "@/features/tasks/tasksSlice.ts";
-
 import toast from 'react-hot-toast';
+import {appListener} from "@/store";
 
 const {play: playSound} = loadAudio(startAudio);
 const {play: nextSessionSound} = loadAudio(nextSessionAudio);
@@ -21,7 +20,7 @@ const {play: completeCycleSound} = loadAudio(cycleCompleteAudio);
 const {play: buttonSoftSound} = loadAudio(buttonSoftAudio);
 
 
-export function registerLoggingListeners(middleware) {
+export function registerLoggingListeners(middleware: typeof appListener) {
     middleware.startListening({
         matcher: isAnyOf(
             start,
