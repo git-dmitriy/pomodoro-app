@@ -12,8 +12,6 @@ import {useAppDispatch} from "@/hooks/useAppDispatch";
 export const TaskListItem = (task: TaskItemType) => {
     const [content, setContent] = useState(task.content);
     const textInputRef = useRef<HTMLTextAreaElement>(null);
-    const [isComplete, setIsComplete] = useState(task.isComplete);
-    const firstRender = useRef(true);
     const [isEdit, setIsEdit] = useState(false);
     const dispatch = useAppDispatch();
 
@@ -25,27 +23,13 @@ export const TaskListItem = (task: TaskItemType) => {
                     updateTask({
                         id: task.id,
                         content: content.trim(),
-                        isComplete: isComplete,
+                        isComplete: task.isComplete,
                     })
                 );
             }
             textInputRef.current?.blur();
         }
     };
-
-    useEffect(() => {
-        if (!firstRender.current) {
-            dispatch(
-                updateTask({
-                    id: task.id,
-                    content: content.trim(),
-                    isComplete: isComplete,
-                })
-            );
-        }
-        firstRender.current = false;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isComplete]);
 
     useEffect(() => {
         textInputRef.current?.focus();
@@ -57,7 +41,7 @@ export const TaskListItem = (task: TaskItemType) => {
                 updateTask({
                     id: task.id,
                     content: content.trim(),
-                    isComplete: isComplete,
+                    isComplete: task.isComplete,
                 })
             );
         }
@@ -70,12 +54,18 @@ export const TaskListItem = (task: TaskItemType) => {
     };
 
     const onCompleteHandler = () => {
-        setIsComplete(!isComplete);
+        dispatch(
+            updateTask({
+                id: task.id,
+                content: content.trim(),
+                isComplete: !task.isComplete,
+            })
+        );
     };
 
     const onChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
-        if (!isComplete) {
+        if (!task.isComplete) {
             setContent(e.target.value);
         }
     };
@@ -85,13 +75,13 @@ export const TaskListItem = (task: TaskItemType) => {
     };
 
     return (
-        <TaskItem $isChecked={isComplete}>
+        <TaskItem $isChecked={task.isComplete}>
             <Checkbox
-                $isChecked={isComplete}
+                $isChecked={task.isComplete}
                 onClickHandler={onCompleteHandler}
             />
 
-            {isEdit && !isComplete ? (
+            {isEdit && !task.isComplete ? (
                 <TextArea
                     refElement={textInputRef}
                     content={content}
