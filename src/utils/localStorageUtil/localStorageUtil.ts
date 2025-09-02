@@ -1,6 +1,6 @@
 interface StorageUtil {
     setItem<T>(key: string, value: T): void;
-    getItem<T>(key: string, defaultValue?: T): T | undefined | null;
+    getItem<T>(key: string, defaultValue: T): T | null;
     removeItem(key: string): void;
     clear(): void;
     hasKey(key: string): boolean;
@@ -15,7 +15,7 @@ export const localStorageUtil: StorageUtil = {
         }
     },
 
-    getItem<T>(key: string, defaultValue?: T): T | undefined {
+    getItem<T>(key: string, defaultValue: T): T | null {
         try {
             const stored = window.localStorage.getItem(key);
             if (stored === null) {
