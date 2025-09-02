@@ -15,8 +15,6 @@ let interval: number | null;
 self.onmessage = function (e: MessageEvent<WorkerIncomingMessage>) {
     const {message} = e.data;
 
-    console.log('Worker received:', e.data);
-
     if (message === 'start') {
         if (interval) return;
 
