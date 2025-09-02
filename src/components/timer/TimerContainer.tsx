@@ -49,10 +49,10 @@ export const TimerContainer = () => {
         if (firstRender.current) {
 
             if (localConfig) {
-                dispatch(timer.init(localConfig));
+                dispatch(timer.init(localConfig.timer));
                 dispatch(settings.loadSettings(localConfig))
             } else {
-                dispatch(timer.init(config))
+                dispatch(timer.init(config.timer))
             }
             firstRender.current = false;
         }
@@ -97,14 +97,15 @@ export const TimerContainer = () => {
         if (workerRef.current) {
             workerRef.current.postMessage({message: 'stop'});
             dispatch(timer.reset(config));
+            dispatch(timer.reset(config.timer));
         }
     };
 
     const switchToNextSession = () => {
         if (currentSession === totalSessions) {
-            dispatch(timer.cycleComplete(config));
+            dispatch(timer.cycleComplete(config.timer));
         } else {
-            dispatch(timer.nextSession(config));
+            dispatch(timer.nextSession(config.timer));
         }
     };
 
@@ -132,7 +133,7 @@ export const TimerContainer = () => {
 
                 <ShowTasksBtn/>
 
-                {showSettings && createPortal(
+                {config.showSettings && createPortal(
                     <Backdrop>
                         <Settings/>
                     </Backdrop>, document.body)}

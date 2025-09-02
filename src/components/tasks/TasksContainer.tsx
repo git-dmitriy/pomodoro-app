@@ -37,7 +37,7 @@ const TaskHeading = styled.h2`
 export const TasksContainer = () => {
 
     const dispatch = useDispatch();
-    const showTasks = useSelector((state: RootState) => state.settings.showTasks);
+    const showTasks = useSelector((state: RootState) => state.settings.config.showTasks);
     const storeTasks = useSelector((state: RootState) => state.tasks);
     const [localTasks] = useLocalStorage<TaskItem[] | null>('tasks', null);
 

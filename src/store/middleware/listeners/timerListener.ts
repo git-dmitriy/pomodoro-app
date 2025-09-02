@@ -12,9 +12,9 @@ export function registerTimerListener(middleware: typeof appListener
 
             if (state.timer.secondsLeft === 0 && state.timer.isRunning) {
                 if (state.timer.currentSession === state.timer.totalSessions) {
-                    listenerApi.dispatch(cycleComplete(state.settings.config));
+                    listenerApi.dispatch(cycleComplete(state.settings.config.timer));
                 } else {
-                    listenerApi.dispatch(nextSession(state.settings.config));
+                    listenerApi.dispatch(nextSession(state.settings.config.timer));
                 }
             }
         },

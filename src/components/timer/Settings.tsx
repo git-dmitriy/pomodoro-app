@@ -4,7 +4,7 @@ import {
     ChangeEvent,
     SyntheticEvent,
 } from 'react';
-import {Config} from '@/features/timer/types';
+
 import {InputNumber} from '@/components/ui/InputNumber';
 import {Button} from '@/components/ui/Button';
 import {FaSave} from 'react-icons/fa';
@@ -19,9 +19,10 @@ import * as settings from '@/features/settings/settingsSlice';
 import * as timer from "@/features/timer/timerSlice.ts";
 import {checkLimits} from "@/utils/checkLimits";
 import {Checkbox} from "@/components/ui/Checkbox.tsx";
+import {Config} from "@/features/settings/types.ts";
 
 export const Settings = () => {
-    const {config, isSoundOn} = useAppSelector((state) => state.settings);
+    const {config} = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
     const maxSessionsLimit = 4;
@@ -30,8 +31,9 @@ export const Settings = () => {
     const maxTimeLimit = 60;
 
     const [localConfig, setLocalConfig] = useLocalStorage<Config>('config', config);
-    const [timing, setTiming] = useState(localConfig.timing);
-    const [sessions, setSessions] = useState(config.sessions);
+    const [timing, setTiming] = useState(localConfig.timer.timing);
+    const [sessions, setSessions] = useState(config.timer.sessions);
+    const [sounds, setSounds] = useState(localConfig.isSoundOn);
 
     useEffect(() => {
         document.addEventListener("keyup", handleEscEvent);
@@ -81,21 +83,29 @@ export const Settings = () => {
     const onSubmitHandler = (e: SyntheticEvent) => {
         e.preventDefault();
         dispatch(settings.setSettings({
-            timing,
-            sessions
+            timer: {
+                timing,
+                sessions,
+            },
+            isSoundOn: sounds,
+            showTasks: config.showTasks,
+            showSettings: false
         }))
 
         // todo: возможно, лучше перенести это в listener middleware
         setLocalConfig({
-            timing,
-            sessions,
-            isSoundOn,
+            timer: {
+                timing,
+                sessions,
+            },
+            isSoundOn: sounds,
+            showTasks: config.showTasks,
+            showSettings: false
         });
 
         dispatch(timer.init({
             timing,
             sessions,
-            isSoundOn,
         }))
     };
 
@@ -104,7 +114,7 @@ export const Settings = () => {
     };
 
     function onChangeSounds() {
-        dispatch(settings.setSoundSettings(!isSoundOn));
+        setSounds(!sounds);
     }
 
     return (
@@ -170,7 +180,7 @@ export const Settings = () => {
                 <Fieldset legend='Звук:'>
                     <FlexContainer $gap={'var(--unit-2)'}>
                         <Checkbox
-                            $isChecked={isSoundOn}
+                            $isChecked={sounds}
                             onClickHandler={onChangeSounds}
                         />
                         <p>Включить звук</p>

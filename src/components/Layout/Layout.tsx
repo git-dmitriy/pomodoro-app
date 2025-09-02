@@ -27,7 +27,7 @@ type Props = {
 
 export const Layout: React.FC<Props> = ({children}) => {
     const {isRunning, mode} = useAppSelector((state) => state.timer);
-    const isTasksShown = useSelector((state: RootState) => state.settings.showTasks);
+    const isTasksShown = useSelector((state: RootState) => state.settings.config.showTasks);
     const backgroundColor = isRunning ? mode : 'standby';
 
     return (

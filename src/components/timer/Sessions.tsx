@@ -39,7 +39,7 @@ export const Sessions = () => {
     const {currentSession, totalSessions} = useAppSelector((state) => state.timer);
     const {config} = useAppSelector((state) => state.settings);
 
-    const totalTomatoes = Array.from(Array(config.sessions).keys());
+    const totalTomatoes = Array.from(Array(config.timer.sessions).keys());
     const currentTomatoes = (totalSessions - currentSession) / 2;
 
     return (

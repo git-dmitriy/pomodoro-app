@@ -1,13 +1,16 @@
 export interface SettingsState {
-    showTasks: boolean,
-    showSettings: boolean,
-    isSoundOn: boolean,
     config: Config,
 }
 
 export type Config = {
-    timing: Timing,
-    sessions: number
+    timer: {
+        timing: Timing,
+        sessions: number,
+    }
+    showTasks: boolean,
+    showSettings: boolean,
+    isSoundOn: boolean,
+
 }
 
 type Timing = {

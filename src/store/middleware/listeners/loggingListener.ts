@@ -41,7 +41,7 @@ export function registerLoggingListeners(middleware: typeof appListener) {
         effect: (action: Action, listenerApi) => {
             const state = listenerApi.getState();
 
-            const isSoundOn = state.settings.isSoundOn === true;
+            const isSoundOn = state.settings.config.isSoundOn === true;
 
             switch (action.type) {
                 case 'timer/start':

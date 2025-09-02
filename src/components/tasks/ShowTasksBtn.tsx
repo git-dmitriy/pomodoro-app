@@ -11,7 +11,7 @@ const CustomButton = styled(Button)`
 
 export const ShowTasksBtn = () => {
 
-    const isTaskShown = useSelector((state: RootState) => state.settings.showTasks);
+    const isTaskShown = useSelector((state: RootState) => state.settings.config.showTasks);
     const dispatch = useDispatch();
 
     return (
