@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import * as React from "react";
+
+type StyleWithVars = React.CSSProperties & Record<'--progress', string>;
 
 const Container = styled.article`
     position: relative;
@@ -60,13 +63,14 @@ export const ProgressRing: React.FC<Props> = ({children, timeLeft, totalTime, is
     } else {
         progress = (timeLeft / totalTime * 100);
     }
+    const style: StyleWithVars = {'--progress': `${progress}`};
 
     return (
         <Container>
             <svg
                 viewBox="0 0 250 250"
                 className="progress-ring"
-                style={{'--progress': progress}}
+                style={style}
             >
                 <circle className="bg"></circle>
                 <circle className="fg"></circle>

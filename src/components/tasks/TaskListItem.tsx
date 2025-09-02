@@ -11,7 +11,7 @@ import {useAppDispatch} from "@/hooks/useAppDispatch";
 
 export const TaskListItem = (task: TaskItemType) => {
     const [content, setContent] = useState(task.content);
-    const textInputRef = useRef<null | HTMLTextAreaElement>(null);
+    const textInputRef = useRef<HTMLTextAreaElement>(null);
     const [isComplete, setIsComplete] = useState(task.isComplete);
     const firstRender = useRef(true);
     const [isEdit, setIsEdit] = useState(false);

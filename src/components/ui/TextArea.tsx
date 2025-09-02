@@ -49,7 +49,7 @@ const TaskInputArea = styled.textarea`
 
 type P = {
     content: string;
-    refElement: RefObject<HTMLTextAreaElement>;
+    refElement: RefObject<HTMLTextAreaElement | null>;
     onChangeHandler: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     onBlurHandler: () => void;
     onKeyUpHandler: (e: KeyboardEvent<HTMLTextAreaElement>) => void;

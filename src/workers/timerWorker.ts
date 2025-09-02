@@ -1,6 +1,18 @@
+
+type WorkerIncomingMessage = {
+    message: 'start' | 'stop';
+};
+
+type WorkerOutgoingMessage = {
+    message: 'tick' | 'error';
+    error?: ErrorEvent;
+};
+
+declare const self: DedicatedWorkerGlobalScope;
+
 let interval: number | null;
 
-self.onmessage = function (e) {
+self.onmessage = function (e: MessageEvent<WorkerIncomingMessage>) {
     const {message} = e.data;
 
     console.log('Worker received:', e.data);
@@ -8,20 +20,20 @@ self.onmessage = function (e) {
     if (message === 'start') {
         if (interval) return;
 
-        interval = setInterval(() => {
-            postMessage({message: 'tick'});
+        interval = self.setInterval(() => {
+            self.postMessage({message: 'tick'} satisfies WorkerOutgoingMessage);
         }, 1000);
 
     }
     if (message === 'stop') {
         if (interval) {
-            clearInterval(interval);
+            self.clearInterval(interval);
             interval = null;
         }
     }
 };
 
-self.onerror = function (error) {
+self.onerror = function (error: ErrorEvent) {
     console.error('Worker error:', error);
-    postMessage({message: 'error', error});
+    self.postMessage({message: 'error', error} satisfies WorkerOutgoingMessage);
 };

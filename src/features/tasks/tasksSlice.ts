@@ -22,7 +22,8 @@ export const tasksSlice = createSlice({
             }
         },
         loadTasks: (state, action: PayloadAction<TaskItem[]>) => {
-           return action.payload;
+            void state;
+            return action.payload;
         },
         removeCompletedTasks: (state) =>
             state.filter((task) => task.isComplete === false),

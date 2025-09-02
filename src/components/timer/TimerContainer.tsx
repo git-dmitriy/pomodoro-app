@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import * as timer from '@/features/timer/timerSlice';
 import * as settings from '@/features/settings/settingsSlice';
 import {Sessions} from '@/components/timer/Sessions';
@@ -17,12 +17,17 @@ import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
 import {Settings} from "@/components/timer/Settings.tsx";
 import {Config} from "@/features/settings/types.ts";
 
-let TimerWorker: unknown;
+let TimerWorker: Worker | null;
 if (typeof window !== 'undefined') {
     TimerWorker = window.Worker
         ? new Worker(new URL('@/workers/timerWorker.js', import.meta.url))
         : null;
 }
+
+interface WorkerMessage {
+    message: 'tick' | 'start' | 'stop';
+}
+
 
 export const TimerContainer = () => {
     const dispatch = useAppDispatch();
@@ -37,12 +42,10 @@ export const TimerContainer = () => {
     } = useAppSelector(
         (state) => state.timer
     );
-    const {config, showSettings} = useAppSelector((state) => state.settings);
+    const {config} = useAppSelector((state) => state.settings);
 
-    const workerRef = useRef<unknown>(null);
-    const [localConfig ] = useLocalStorage<Config | null>('config', null );
-
-    // const audio = new Audio(process.env.PUBLIC_URL + '/ding.mp3');
+    const workerRef = useRef<Worker>(null);
+    const [localConfig] = useLocalStorage<Config | null>('config', null);
 
     useEffect(() => {
 
@@ -59,10 +62,8 @@ export const TimerContainer = () => {
 
         if (!TimerWorker) return;
         workerRef.current = TimerWorker;
-        console.log('workerRef.current', workerRef.current);
 
-        workerRef.current.onmessage = (event: MessageEvent) => {
-            console.log('message from worker', event.data);
+        workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
             if (event.data.message === 'tick' && isRunning) {
                 if (secondsLeft > 0) {
                     dispatch(timer.tick());
@@ -78,25 +79,21 @@ export const TimerContainer = () => {
     const startHandler = () => {
 
         if (workerRef.current && !isRunning) {
-            workerRef.current.postMessage({message: 'start'});
-            console.log('worker message post: start')
+            workerRef.current.postMessage({message: 'start'} as WorkerMessage);
+            dispatch(timer.start());
         }
-        dispatch(timer.start());
     };
 
     const pauseHandler = () => {
-        console.log('in pause handler');
-
         if (workerRef.current) {
-            workerRef.current.postMessage({message: 'stop'});
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
             dispatch(timer.pause());
         }
     };
 
     const resetHandler = () => {
         if (workerRef.current) {
-            workerRef.current.postMessage({message: 'stop'});
-            dispatch(timer.reset(config));
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
             dispatch(timer.reset(config.timer));
         }
     };
