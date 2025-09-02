@@ -4,7 +4,6 @@ import {
     ChangeEvent,
     SyntheticEvent,
 } from 'react';
-
 import {InputNumber} from '@/components/ui/InputNumber';
 import {Button} from '@/components/ui/Button';
 import {FaSave} from 'react-icons/fa';
@@ -16,7 +15,6 @@ import {useLocalStorage} from "@/hooks/useLocalStorage";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
-import * as timer from "@/features/timer/timerSlice.ts";
 import {checkLimits} from "@/utils/checkLimits";
 import {Checkbox} from "@/components/ui/Checkbox.tsx";
 import {Config} from "@/features/settings/types.ts";
@@ -30,7 +28,7 @@ export const Settings = () => {
     const minTimeLimit = 5;
     const maxTimeLimit = 60;
 
-    const [localConfig, setLocalConfig] = useLocalStorage<Config>('config', config);
+    const [localConfig] = useLocalStorage<Config>('config', config);
     const [timing, setTiming] = useState(localConfig.timer.timing);
     const [sessions, setSessions] = useState(config.timer.sessions);
     const [sounds, setSounds] = useState(localConfig.isSoundOn);
@@ -90,22 +88,6 @@ export const Settings = () => {
             isSoundOn: sounds,
             showTasks: config.showTasks,
             showSettings: false
-        }))
-
-        // todo: возможно, лучше перенести это в listener middleware
-        setLocalConfig({
-            timer: {
-                timing,
-                sessions,
-            },
-            isSoundOn: sounds,
-            showTasks: config.showTasks,
-            showSettings: false
-        });
-
-        dispatch(timer.init({
-            timing,
-            sessions,
         }))
     };
 
