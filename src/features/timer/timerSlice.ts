@@ -1,96 +1,88 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Config, Timer, Session } from 'features/timer/types';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Timer, Config} from '@/features/timer/types';
 
 export const timerSlice = createSlice({
-  name: 'timer',
-  initialState: {
-    config: {
-      timing: {
-        focus: 25,
-        rest: 15,
-        break: 5,
-      },
-      sessions: [
-        'focus',
-        'break',
-        'focus',
-        'break',
-        'focus',
-        'break',
-        'focus',
-        'rest',
-      ],
-      sessionsBeforeRest: 4,
-    },
-    time: 0,
-    sessionNumber: 0,
-    currentSession: 'focus',
-    isRunning: false,
-    timerId: null,
-    completedCycles: 0,
-    tomatoes: 0,
-    totalTomatoes: 0,
-  } as Timer,
+    name: 'timer',
+    initialState: {
+        secondsLeft: 0,
+        totalSeconds: 0,
+        mode: 'focus',
+        totalSessions: 8,
+        currentSession: 1,
+        isRunning: false,
+    } as Timer,
 
-  reducers: {
-    init: (state, action: PayloadAction<Config>) => {
-      state.config = action.payload;
-      state.currentSession = state.config.sessions[state.sessionNumber];
-      state.time = state.config.timing[state.currentSession] * 60;
-    },
+    reducers: {
+        init: (state, action: PayloadAction<Config>) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
+            state.isRunning = false;
+        },
 
-    start: (state, action) => {
-      state.isRunning = true;
-      state.timerId = action.payload;
-    },
+        start: (state) => {
+            state.isRunning = true;
+        },
 
-    pause: (state) => {
-      state.timerId = null;
-      state.isRunning = false;
-    },
+        pause: (state) => {
+            state.isRunning = false;
+        },
 
-    reset: (state) => {
-      state.timerId = null;
-      state.isRunning = false;
-      state.sessionNumber = 0;
-      state.completedCycles = 0;
-      state.tomatoes = 0;
-      state.totalTomatoes = 0;
-    },
+        tick: (state) => {
+            if (state.secondsLeft > 0) {
+                state.secondsLeft -= 1;
+            }
+        },
 
-    nextSession: (state, action: PayloadAction<Session>) => {
-      state.time = state.config.timing[action.payload] * 60;
-      state.currentSession = action.payload;
-      state.sessionNumber += 1;
-      if (action.payload === 'break' || action.payload === 'rest') {
-        state.tomatoes += 1;
-        state.totalTomatoes += 1;
-      }
-    },
+        nextSession: (state, action: PayloadAction<Config>) => {
+            if (state.currentSession < state.totalSessions) {
+                state.currentSession += 1;
+                if (state.currentSession === state.totalSessions) {
+                    state.mode = 'rest';
+                    state.secondsLeft = action.payload.timing.rest * 60;
+                    state.totalSeconds = action.payload.timing.rest * 60;
+                } else if (state.currentSession % 2 === 0) {
+                    state.mode = 'break';
+                    state.secondsLeft = action.payload.timing.break * 60;
+                    state.totalSeconds = action.payload.timing.break * 60;
+                } else {
+                    state.mode = 'focus';
+                    state.secondsLeft = action.payload.timing.focus * 60;
+                    state.totalSeconds = action.payload.timing.focus * 60;
+                }
+            }
+        },
 
-    cycleComplete: (state) => {
-      state.currentSession = 'focus';
-      state.sessionNumber = 0;
-      state.completedCycles += 1;
-      state.tomatoes = 0;
-      state.timerId = null;
-      state.isRunning = false;
-    },
+        reset: (state, action: PayloadAction<Config>) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
+            state.isRunning = false;
+        },
 
-    setSettings: (state, action: PayloadAction<Config>) => {
-      state.config = action.payload;
+        cycleComplete: (state, action: PayloadAction<Config >) => {
+            state.secondsLeft = action.payload.timing.focus * 60;
+            state.totalSeconds = action.payload.timing.focus * 60;
+            state.mode = 'focus';
+            state.totalSessions = action.payload.sessions * 2;
+            state.currentSession = 1;
+            state.isRunning = false;
+        },
     },
-  },
 });
 
 export const {
-  init,
-  start,
-  pause,
-  reset,
-  cycleComplete,
-  nextSession,
-  setSettings,
+    init,
+    start,
+    pause,
+    tick,
+    nextSession,
+    reset,
+    cycleComplete,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;

@@ -1,175 +1,174 @@
 import {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-  ChangeEvent,
-  SyntheticEvent,
+    useState,
+    useEffect,
+    ChangeEvent,
+    SyntheticEvent,
 } from 'react';
-import { useLocalStorage } from 'components/hooks/useLocalsotrage';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { init, setSettings } from 'features/timer/timerSlice';
-import { Config, Session } from 'features/timer/types';
-import { InputNumber } from 'components/ui/InputNumber';
-import { Button } from 'components/ui/Button';
-import { FaSave } from 'react-icons/fa';
-import { RiCloseCircleFill } from 'react-icons/ri';
-import { Fieldset } from 'components/ui/Fieldset';
-import { SettingsContainer } from 'components/ui/SettingsContainer';
-import { FlexContainer } from 'components/ui/FlexContainer';
+import {InputNumber} from '@/components/ui/InputNumber';
+import {Button} from '@/components/ui/Button';
+import {FaSave} from 'react-icons/fa';
+import {RiCloseCircleFill} from 'react-icons/ri';
+import {Fieldset} from '@/components/ui/Fieldset';
+import {SettingsContainer} from '@/components/ui/SettingsContainer';
+import {FlexContainer} from '@/components/ui/FlexContainer';
+import {useLocalStorage} from "@/hooks/useLocalStorage";
+import {useAppSelector} from "@/hooks/useAppSelector";
+import {useAppDispatch} from "@/hooks/useAppDispatch";
+import * as settings from '@/features/settings/settingsSlice';
+import {checkLimits} from "@/utils/checkLimits";
+import {Checkbox} from "@/components/ui/Checkbox.tsx";
+import {Config} from "@/features/settings/types.ts";
 
-type P = {
-  setShowSettings: Dispatch<SetStateAction<boolean>>;
-};
+export const Settings = () => {
+    const {config} = useAppSelector((state) => state.settings);
+    const dispatch = useAppDispatch();
 
-export const Settings = ({ setShowSettings }: P) => {
-  const { config } = useAppSelector((state) => state.timer);
-  const dispatch = useAppDispatch();
-  const firstRender = useRef(true);
+    const maxSessionsLimit = 4;
+    const minSessionsLimit = 2;
+    const minTimeLimit = 5;
+    const maxTimeLimit = 60;
 
-  const [timing, setTiming] = useState(config.timing);
-  const [sessions, setSessions] = useState(config.sessions);
-  const [sessionsBeforeRest, setSessionsBeforeRest] = useState(
-    config.sessionsBeforeRest
-  );
+    const [localConfig] = useLocalStorage<Config>('config', config);
+    const [timing, setTiming] = useState(localConfig.timer.timing);
+    const [sessions, setSessions] = useState(config.timer.sessions);
+    const [sounds, setSounds] = useState(localConfig.isSoundOn);
 
-  const [localConfig, setLocalConfig] = useLocalStorage<Config>('config', {
-    timing,
-    sessionsBeforeRest,
-    sessions,
-  });
+    useEffect(() => {
+        document.addEventListener("keyup", handleEscEvent);
 
-  useEffect(() => {
-    setSessions(generateSessions(sessionsBeforeRest));
-  }, [sessionsBeforeRest]);
+        return () => {
+            document.removeEventListener('keyup', handleEscEvent);
+        }
+    }, []);
 
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
+    const handleEscEvent = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            closeSettings();
+        }
     }
 
-    dispatch(setSettings(localConfig));
-    dispatch(init(localConfig));
-    closeSettings();
+    const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        if (
+            e.target.value.trim().length !== 0 &&
+            typeof parseInt(e.target.value, 10) === 'number'
+        ) {
+            setTiming({
+                ...timing,
+                [e.target.name]: checkLimits({
+                    value: parseInt(e.target.value, 10),
+                    min: minTimeLimit,
+                    max: maxTimeLimit
+                })
+            })
+        }
+    };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localConfig]);
+    const onChangeSessionsHandler = (
+        e: ChangeEvent<HTMLInputElement>
+    ) => {
+        if (
+            e.target.value.trim().length !== 0 &&
+            typeof parseInt(e.target.value, 10) === 'number'
+        ) {
+            setSessions(checkLimits({
+                value: parseInt(e.target.value, 10),
+                max: maxSessionsLimit,
+                min: minSessionsLimit,
+            }));
+        }
+    };
 
-  const generateSessions = (num: number): Session[] => {
-    let sessions = [] as Session[];
-    for (let i = 0; i < num; i++) {
-      sessions.push('focus', 'break');
+    const onSubmitHandler = (e: SyntheticEvent) => {
+        e.preventDefault();
+        dispatch(settings.setSettings({
+            timer: {
+                timing,
+                sessions,
+            },
+            isSoundOn: sounds,
+            showTasks: config.showTasks,
+            showSettings: false
+        }))
+    };
+
+    const closeSettings = () => {
+        dispatch(settings.closeSettings());
+    };
+
+    function onChangeSounds() {
+        setSounds(!sounds);
     }
-    sessions.splice(-1, 1, 'rest');
-    return sessions;
-  };
 
-  const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (
-      e.target.value.trim().length !== 0 &&
-      typeof parseInt(e.target.value, 10) === 'number'
-    ) {
-      if (parseInt(e.target.value, 10) < 5) {
-        setTiming({ ...timing, [e.target.name]: 5 });
-      } else if (parseInt(e.target.value, 10) > 60) {
-        setTiming({ ...timing, [e.target.name]: 60 });
-      } else {
-        setTiming({ ...timing, [e.target.name]: parseInt(e.target.value, 10) });
-      }
-    }
-  };
+    return (
+        <SettingsContainer>
+            <FlexContainer $justifyContent='space-between' $alignItems='center'>
+                <h2>Настройки</h2>
+                <FlexContainer $justifyContent='center' $alignItems='center'>
+                    <Button onClick={onSubmitHandler}>
+                        <FaSave/>
+                    </Button>
+                    <Button onClick={closeSettings}>
+                        <RiCloseCircleFill/>
+                    </Button>
+                </FlexContainer>
+            </FlexContainer>
 
-  const onChangeSessionsBeforeRestHandler = (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    if (
-      e.target.value.trim().length !== 0 &&
-      typeof parseInt(e.target.value, 10) === 'number'
-    ) {
-      if (parseInt(e.target.value, 10) < 2) {
-        setSessionsBeforeRest(2);
-      } else if (parseInt(e.target.value, 10) > 16) {
-        setSessionsBeforeRest(16);
-      } else {
-        setSessionsBeforeRest(parseInt(e.target.value, 10));
-      }
-    }
-  };
+            <form>
+                <Fieldset legend='Время:'>
+                    <InputNumber
+                        id='focus'
+                        name='focus'
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
+                        step={5}
+                        label='Фокусировка'
+                        value={timing.focus}
+                        onChangeHandler={onChangeTimingHandler}
+                    />
+                    <InputNumber
+                        id='break'
+                        name='break'
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
+                        step={5}
+                        label='Перерыв'
+                        value={timing.break}
+                        onChangeHandler={onChangeTimingHandler}
+                    />
+                    <InputNumber
+                        id='rest'
+                        name='rest'
+                        min={minTimeLimit}
+                        max={maxTimeLimit}
+                        step={5}
+                        label='Отдых'
+                        value={timing.rest}
+                        onChangeHandler={onChangeTimingHandler}
+                    />
+                </Fieldset>
 
-  const onSubmitHandler = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setLocalConfig({
-      timing,
-      sessionsBeforeRest,
-      sessions,
-    });
-  };
-
-  const closeSettings = () => setShowSettings(false);
-
-  return (
-    <SettingsContainer>
-      <FlexContainer justifyContent='space-between' alignItems='center'>
-        <h2>Настройки</h2>
-        <FlexContainer justifyContent='center' alignItems='center'>
-          <Button onClick={onSubmitHandler}>
-            <FaSave />
-          </Button>
-          <Button onClick={closeSettings}>
-            <RiCloseCircleFill />
-          </Button>
-        </FlexContainer>
-      </FlexContainer>
-
-      <form>
-        <Fieldset legend='Время:'>
-          <InputNumber
-            id='focus'
-            name='focus'
-            min={5}
-            max={60}
-            step={5}
-            label='Фокусировка'
-            value={timing.focus}
-            onChangeHandler={onChangeTimingHandler}
-          />
-          <InputNumber
-            id='break'
-            name='break'
-            min={5}
-            max={60}
-            step={5}
-            label='Перерыв'
-            value={timing.break}
-            onChangeHandler={onChangeTimingHandler}
-          />
-          <InputNumber
-            id='rest'
-            name='rest'
-            min={5}
-            max={60}
-            step={5}
-            label='Отдых'
-            value={timing.rest}
-            onChangeHandler={onChangeTimingHandler}
-          />
-        </Fieldset>
-
-        <Fieldset legend='Количество сессий:'>
-          <InputNumber
-            id='sessionsBeforeRest'
-            name='sessionsBeforeRest'
-            min={2}
-            max={16}
-            step={1}
-            label='Помидорки'
-            value={sessionsBeforeRest}
-            onChangeHandler={onChangeSessionsBeforeRestHandler}
-          />
-        </Fieldset>
-      </form>
-    </SettingsContainer>
-  );
+                <Fieldset legend='Количество сессий:'>
+                    <InputNumber
+                        id='sessions'
+                        name='sessions'
+                        min={minSessionsLimit}
+                        max={maxSessionsLimit}
+                        step={1}
+                        label='Помидорки'
+                        value={sessions}
+                        onChangeHandler={onChangeSessionsHandler}
+                    />
+                </Fieldset>
+                <Fieldset legend='Звук:'>
+                    <FlexContainer $gap={'var(--unit-2)'}>
+                        <Checkbox
+                            $isChecked={sounds}
+                            onClickHandler={onChangeSounds}
+                        />
+                        <p>Включить звук</p>
+                    </FlexContainer>
+                </Fieldset>
+            </form>
+        </SettingsContainer>
+    );
 };

@@ -1,134 +1,140 @@
-import { useState, useEffect, useRef } from 'react';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
-import * as timer from 'features/timer/timerSlice';
-import { Sessions } from 'components/timer/Sessions';
-import { Settings } from 'components/timer/Settings';
-import { ClockDial } from 'components/timer/ClockDial';
-import { Controls } from 'components/timer/Controls';
-import { Button } from 'components/ui/Button';
-import { Backdrop } from 'components/ui/Backdrop';
-import { FlexContainer } from 'components/ui/FlexContainer';
-import { AddTaskForm } from 'components/tasks/AddTaskForm';
-import Portal from 'components/ui/Portal';
-import { RiSettings4Fill } from 'react-icons/ri';
-import { useLocalStorage } from 'components/hooks/useLocalsotrage';
-import { Config } from 'features/timer/types';
+import {useEffect, useRef} from 'react';
+import * as timer from '@/features/timer/timerSlice';
+import * as settings from '@/features/settings/settingsSlice';
+import {Sessions} from '@/components/timer/Sessions';
+import {ClockDial} from '@/components/timer/ClockDial';
+import {Controls} from '@/components/timer/Controls';
+import {Button} from '@/components/ui/Button';
+import {Backdrop} from '@/components/ui/Backdrop';
+import {RiSettings4Fill} from 'react-icons/ri';
+import {useLocalStorage} from "@/hooks/useLocalStorage";
+import {createPortal} from "react-dom";
+import {useAppDispatch} from "@/hooks/useAppDispatch";
+import {useAppSelector} from "@/hooks/useAppSelector";
+
+import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
+import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
+import {Settings} from "@/components/timer/Settings.tsx";
+import {Config} from "@/features/settings/types.ts";
+
+let TimerWorker: Worker | null;
+if (typeof window !== 'undefined') {
+    TimerWorker = window.Worker
+        ? new Worker(new URL('@/workers/timerWorker.js', import.meta.url))
+        : null;
+}
+
+interface WorkerMessage {
+    message: 'tick' | 'start' | 'stop';
+}
+
 
 export const TimerContainer = () => {
-  const dispatch = useAppDispatch();
-  const [showSettings, setShowSettings] = useState(false);
-  const firstRender = useRef(true);
-  const { isRunning, timerId, time, sessionNumber, config } = useAppSelector(
-    (state) => state.timer
-  );
-  const audio = new Audio(process.env.PUBLIC_URL + '/ding.mp3');
+    const dispatch = useAppDispatch();
+    const firstRender = useRef(true);
 
-  const [timeLeft, setTimeLeft] = useState<number>(time);
-  const [localConfig] = useLocalStorage<Config>('config', config);
+    const {
+        secondsLeft,
+        totalSeconds,
+        totalSessions,
+        currentSession,
+        isRunning
+    } = useAppSelector(
+        (state) => state.timer
+    );
+    const {config} = useAppSelector((state) => state.settings);
 
-  useEffect(() => {
-    if (timeLeft < 0 && isRunning) {
-      switchToNextSession();
-      setTimeLeft(time);
-    }
-    if (timeLeft === 0 && isRunning) {
-      audio.play();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, isRunning]);
+    const workerRef = useRef<Worker>(null);
+    const [localConfig] = useLocalStorage<Config | null>('config', null);
 
-  useEffect(() => {
-    if (firstRender.current) {
-      dispatch(timer.init(localConfig));
-      firstRender.current = false;
-      return;
-    }
+    useEffect(() => {
 
-    setTimeLeft(time);
+        if (firstRender.current) {
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time]);
+            if (localConfig) {
+                dispatch(timer.init(localConfig.timer));
+                dispatch(settings.loadSettings(localConfig))
+            } else {
+                dispatch(timer.init(config.timer))
+            }
+            firstRender.current = false;
+        }
 
-  const toggleSettings = () => {
-    if (isRunning) {
-      timerId && clearInterval(timerId);
-      dispatch(timer.pause());
-    }
-    setShowSettings(!showSettings);
-  };
+        if (!TimerWorker) return;
+        workerRef.current = TimerWorker;
 
-  const startHandler = () => {
-    const timerId = setInterval(() => {
-      setTimeLeft((time) => time - 1);
-    }, 1000);
-    dispatch(timer.start(timerId));
-  };
+        workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
+            if (event.data.message === 'tick' && isRunning) {
+                if (secondsLeft > 0) {
+                    dispatch(timer.tick());
+                }
+            }
+        }
+    }, [isRunning, secondsLeft, localConfig, config, dispatch]);
 
-  const pauseHandler = () => {
-    timerId && clearInterval(timerId);
-    dispatch(timer.pause());
-  };
+    const toggleSettings = () => {
+        dispatch(settings.openSettings())
+    };
 
-  const resetHandler = () => {
-    timerId && clearInterval(timerId);
-    dispatch(timer.reset());
-    dispatch(timer.init(localConfig));
-    setTimeLeft(time);
-  };
+    const startHandler = () => {
 
-  const switchToNextSession = () => {
-    if (sessionNumber % 2 === 0) {
-      if (sessionNumber === config.sessions.length - 2) {
-        dispatch(timer.nextSession('rest'));
-        setTimeLeft(time);
-      } else {
-        dispatch(timer.nextSession('break'));
-        setTimeLeft(time);
-      }
-    } else if (sessionNumber % 2 !== 0) {
-      if (sessionNumber === config.sessions.length - 1) {
-        timerId && clearInterval(timerId);
-        dispatch(timer.cycleComplete());
-        dispatch(timer.init(localConfig));
-        setTimeLeft(time);
-      } else {
-        dispatch(timer.nextSession('focus'));
-        setTimeLeft(time);
-      }
-    }
-  };
+        if (workerRef.current && !isRunning) {
+            workerRef.current.postMessage({message: 'start'} as WorkerMessage);
+            dispatch(timer.start());
+        }
+    };
 
-  return (
-    <FlexContainer
-      direction='column'
-      alignItems='center'
-      paddingBlock='20px'
-      paddingInline='20px'
-      gap='10px'
-    >
-      <Button onClick={toggleSettings}>
-        <RiSettings4Fill />
-      </Button>
+    const pauseHandler = () => {
+        if (workerRef.current) {
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
+            dispatch(timer.pause());
+        }
+    };
 
-      <ClockDial time={timeLeft} />
+    const resetHandler = () => {
+        if (workerRef.current) {
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
+            dispatch(timer.reset(config.timer));
+        }
+    };
 
-      <Sessions />
+    const switchToNextSession = () => {
+        if (currentSession === totalSessions) {
+            dispatch(timer.cycleComplete(config.timer));
+        } else {
+            dispatch(timer.nextSession(config.timer));
+        }
+    };
 
-      <Controls
-        startHandler={startHandler}
-        pauseHandler={pauseHandler}
-        resetHandler={resetHandler}
-        switchToNextSession={switchToNextSession}
-      />
-      <AddTaskForm />
+    return (
+        <>
+            <ProgressRing
+                timeLeft={secondsLeft}
+                isRunning={isRunning}
+                totalTime={totalSeconds}
+            >
+                <Button onClick={toggleSettings}>
+                    <RiSettings4Fill/>
+                </Button>
 
-      {showSettings && (
-        <Portal>
-          <Backdrop>
-            <Settings setShowSettings={setShowSettings} />
-          </Backdrop>
-        </Portal>
-      )}
-    </FlexContainer>
-  );
+                <ClockDial time={secondsLeft}/>
+
+                <Sessions/>
+
+                <Controls
+                    startHandler={startHandler}
+                    pauseHandler={pauseHandler}
+                    resetHandler={resetHandler}
+                    switchToNextSession={switchToNextSession}
+                />
+
+                <ShowTasksBtn/>
+
+                {config.showSettings && createPortal(
+                    <Backdrop>
+                        <Settings/>
+                    </Backdrop>, document.body)}
+            </ProgressRing>
+        </>
+    );
 };
