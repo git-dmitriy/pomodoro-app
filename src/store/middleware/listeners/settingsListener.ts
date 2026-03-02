@@ -1,10 +1,10 @@
 import {appListener} from "@/store";
 import {isAnyOf} from "@reduxjs/toolkit";
-import {closeTasks, openTasks, setSettings} from "@/features/settings/settingsSlice.ts";
+import {closeTasks, openTasks, setSettings} from "@/features/settings/settingsSlice";
 import {localStorageUtil} from "@/utils/localStorageUtil";
-import {Config} from "@/features/settings/types.ts";
-import {init} from "@/features/timer/timerSlice.ts";
-import {Timing} from "@/features/timer/types.ts";
+import {Config} from "@/features/settings/types";
+import {init} from "@/features/timer/timerSlice";
+import {Timing} from "@/features/timer/types";
 import {isEqualObj} from "@/utils/isEqualObj";
 
 export function settingsListener(middleware: typeof appListener

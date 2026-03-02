@@ -1,1 +1,1 @@
-export * from './useLocalStorage.tsx';
+export * from './useLocalStorage';

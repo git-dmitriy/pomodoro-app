@@ -1,6 +1,6 @@
 import {Action, isAnyOf} from '@reduxjs/toolkit';
-import {cycleComplete, nextSession, pause, start, reset} from "@/features/timer/timerSlice.ts";
-import {openTasks, closeTasks, openSettings, closeSettings, setSettings} from "@/features/settings/settingsSlice.ts";
+import {cycleComplete, nextSession, pause, start, reset} from "@/features/timer/timerSlice";
+import {openTasks, closeTasks, openSettings, closeSettings, setSettings} from "@/features/settings/settingsSlice";
 import {loadAudio} from "@/utils/loadAudio";
 import startAudio from '@/assets/sounds/start.mp3'
 import stopAudio from '@/assets/sounds/pause.mp3'
@@ -8,7 +8,7 @@ import nextSessionAudio from '@/assets/sounds/next-session.mp3'
 import resetAudio from '@/assets/sounds/reset.mp3'
 import cycleCompleteAudio from '@/assets/sounds/cycle-complete.mp3'
 import buttonSoftAudio from '@/assets/sounds/button_soft.mp3'
-import {createTask, removeCompletedTasks, removeTask, updateTask} from "@/features/tasks/tasksSlice.ts";
+import {createTask, removeCompletedTasks, removeTask, updateTask} from "@/features/tasks/tasksSlice";
 import toast from 'react-hot-toast';
 import {appListener} from "@/store";
 

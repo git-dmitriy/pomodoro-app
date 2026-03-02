@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import {Button} from "@/components/ui/Button.ts";
+import {Button} from "@/components/ui/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
-import {openTasks, closeTasks} from "@/features/settings/settingsSlice.ts";
+import {openTasks, closeTasks} from "@/features/settings/settingsSlice";
 
 const CustomButton = styled(Button)`
     border-radius: var(--unit-2);

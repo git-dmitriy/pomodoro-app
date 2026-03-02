@@ -12,9 +12,9 @@ import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {getValidatedConfig} from "@/utils/validateConfig";
 
-import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
-import {ProgressRing} from "@/components/timer/ProgressRing.tsx";
-import {Settings} from "@/components/timer/Settings.tsx";
+import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn";
+import {ProgressRing} from "@/components/timer/ProgressRing";
+import {Settings} from "@/components/timer/Settings";
 import toast from 'react-hot-toast';
 
 let TimerWorker: Worker | null;

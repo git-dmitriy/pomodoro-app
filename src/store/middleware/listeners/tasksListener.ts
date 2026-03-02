@@ -1,7 +1,7 @@
 import {isAnyOf} from "@reduxjs/toolkit";
-import {createTask, removeCompletedTasks, removeTask, updateTask} from "@/features/tasks/tasksSlice.ts";
-import {localStorageUtil} from "@/utils/localStorageUtil/localStorageUtil.ts";
-import {TaskItem} from "@/features/tasks/types.ts";
+import {createTask, removeCompletedTasks, removeTask, updateTask} from "@/features/tasks/tasksSlice";
+import {localStorageUtil} from "@/utils/localStorageUtil/localStorageUtil";
+import {TaskItem} from "@/features/tasks/types";
 import {appListener} from "@/store";
 
 export function tasksListener(middleware: typeof appListener) {

@@ -1,1 +1,1 @@
-export * from './useSound.tsx';
+export * from './useSound';

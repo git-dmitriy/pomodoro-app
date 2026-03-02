@@ -1,5 +1,5 @@
 import {createGlobalStyle} from 'styled-components';
-import {baseTheme} from '@/config/baseTheme.ts';
+import {baseTheme} from '@/config/baseTheme';
 
 type P = {
     $bg: 'focus' | 'break' | 'rest' | 'standby';

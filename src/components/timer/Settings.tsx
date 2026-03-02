@@ -17,8 +17,8 @@ import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
 import {checkLimits} from "@/utils/checkLimits";
-import {Checkbox} from "@/components/ui/Checkbox.tsx";
-import {Config} from "@/features/settings/types.ts";
+import {Checkbox} from "@/components/ui/Checkbox";
+import {Config} from "@/features/settings/types";
 import {validateConfig} from "@/utils/validateConfig";
 
 export const Settings = () => {

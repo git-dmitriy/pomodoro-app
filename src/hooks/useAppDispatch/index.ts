@@ -1,1 +1,1 @@
-export * from './useAppDispatch.tsx';
+export * from './useAppDispatch';

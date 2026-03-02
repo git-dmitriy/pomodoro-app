@@ -1,7 +1,7 @@
 import {configureStore, ThunkAction, Action, createListenerMiddleware, TypedStartListening} from '@reduxjs/toolkit';
 import tasksReducer from '@/features/tasks/tasksSlice';
 import timerReducer from '@/features/timer/timerSlice';
-import settingsReducer from '@/features/settings/settingsSlice.ts';
+import settingsReducer from '@/features/settings/settingsSlice';
 import {registerAllListeners} from "@/store/middleware/listeners";
 
 export const listenerMiddleware = createListenerMiddleware();
