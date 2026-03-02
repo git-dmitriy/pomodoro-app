@@ -2,6 +2,7 @@ import {
     useState,
     useEffect,
     useCallback,
+    useRef,
     ChangeEvent,
 } from 'react';
 import {InputNumber} from '@/components/ui/InputNumber';
@@ -12,6 +13,7 @@ import {Fieldset} from '@/components/ui/Fieldset';
 import {SettingsContainer} from '@/components/ui/SettingsContainer';
 import {FlexContainer} from '@/components/ui/FlexContainer';
 import {useLocalStorage} from "@/hooks/useLocalStorage";
+import {useFocusTrap} from "@/hooks/useFocusTrap";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
@@ -36,6 +38,9 @@ export const Settings = () => {
     const closeSettings = useCallback(() => {
         dispatch(settings.closeSettings());
     }, [dispatch]);
+
+    const modalRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(modalRef, {initialFocus: true});
 
     useEffect(() => {
         const handleEscEvent = (e: KeyboardEvent) => {
@@ -123,7 +128,7 @@ export const Settings = () => {
     }
 
     return (
-        <SettingsContainer>
+        <SettingsContainer ref={modalRef}>
             <FlexContainer $justifyContent='space-between' $alignItems='center'>
                 <h2>Настройки</h2>
                 <FlexContainer $justifyContent='center' $alignItems='center'>
