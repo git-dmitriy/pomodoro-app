@@ -31,7 +31,7 @@ export const GlobalStyles = createGlobalStyle<P>`
         --bg-break: #5b8e7d;
         --bg-rest: #8cb369;
         --bg-standby: #22333b;
-        
+
         // todo: convert pixels to rems
         --unit-1: 4px; //4px;
         --unit-2: 8px; //8px;
@@ -41,18 +41,18 @@ export const GlobalStyles = createGlobalStyle<P>`
         --unit-6: 32px; //32px;
         --unit-7: 40px; //40px;
         --unit-8: 48px; //48px;
-        
+
         --unit--7: -40px;
-        
+
         --pomodoro-size: 30px;
         --button-size: 50px;
-        
+
         --task-fs-1: 30px;
         --task-fs-2: 30px;
         --task-fs-3: 36px;
         --heading-fs: 3rem;
-        
-        
+
+
         scrollbar-width: thin;
         scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s;
@@ -135,4 +135,11 @@ export const GlobalStyles = createGlobalStyle<P>`
         }
     }
 
+    .overflow-auto {
+        overflow: auto
+    }
+
+    .h-100 {
+        block-size: 100%;
+    }
 `;

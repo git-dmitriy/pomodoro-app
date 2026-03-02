@@ -14,6 +14,7 @@ export type Config = {
     showTasks: boolean,
     showSettings: boolean,
     isSoundOn: boolean,
+    isNotificationsOn: boolean,
 }
 
 export interface SettingsState {

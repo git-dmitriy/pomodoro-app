@@ -7,6 +7,9 @@ export const SettingsContainer = styled.div`
     background-color: #22333b;
     border-radius: var(--unit-4);
     font-size: 1.25rem;
+    max-block-size: 86vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
 
     @media ${({theme}) => theme.media.sm} {
         margin: 0;

@@ -1,9 +1,9 @@
 import type { Config, TimerConfig } from '@/features/settings/types';
 
-const MIN_TIME = 5;
-const MAX_TIME = 60;
-const MIN_SESSIONS = 2;
-const MAX_SESSIONS = 4;
+export const MIN_TIME = 5;
+export const MAX_TIME = 60;
+export const MIN_SESSIONS = 2;
+export const MAX_SESSIONS = 4;
 
 export const DEFAULT_CONFIG: Config = {
   timer: {
@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG: Config = {
   showTasks: false,
   showSettings: false,
   isSoundOn: true,
+  isNotificationsOn: false,
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -66,12 +67,16 @@ export function validateConfig(raw: unknown): Config | null {
   const showTasks = isBoolean(raw.showTasks) ? raw.showTasks : DEFAULT_CONFIG.showTasks;
   const showSettings = isBoolean(raw.showSettings) ? raw.showSettings : DEFAULT_CONFIG.showSettings;
   const isSoundOn = isBoolean(raw.isSoundOn) ? raw.isSoundOn : DEFAULT_CONFIG.isSoundOn;
+  const isNotificationsOn = isBoolean(raw.isNotificationsOn)
+    ? raw.isNotificationsOn
+    : DEFAULT_CONFIG.isNotificationsOn;
 
   return {
     timer,
     showTasks,
     showSettings,
     isSoundOn,
+    isNotificationsOn,
   };
 }
 

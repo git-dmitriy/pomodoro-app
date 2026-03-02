@@ -19,6 +19,18 @@ const {play: resetSound} = loadAudio(resetAudio);
 const {play: completeCycleSound} = loadAudio(cycleCompleteAudio);
 const {play: buttonSoftSound} = loadAudio(buttonSoftAudio);
 
+function showNotification(title: string, body?: string) {
+    if (typeof window === 'undefined') return;
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+
+    try {
+        new Notification(title, body ? {body} : undefined);
+    } catch (error) {
+        console.error('Notification error:', error);
+    }
+}
+
 
 export function registerLoggingListeners(middleware: typeof appListener) {
     middleware.startListening({
@@ -42,37 +54,53 @@ export function registerLoggingListeners(middleware: typeof appListener) {
             const state = listenerApi.getState();
 
             const isSoundOn = state.settings.config.isSoundOn === true;
+            const isNotificationsOn = state.settings.config.isNotificationsOn === true;
 
             switch (action.type) {
                 case 'timer/start':
-                    if (isSoundOn) playSound()
+                    if (isSoundOn) playSound();
                     toast('Таймер запущен', {
                         icon: '🚀'
                     });
+                    if (isNotificationsOn) {
+                        showNotification('Pomodoro', 'Таймер запущен');
+                    }
                     break;
                 case 'timer/pause':
                     if (isSoundOn) pauseSound();
                     toast('Таймер остановлен', {
                         icon: '✋'
                     });
+                    if (isNotificationsOn) {
+                        showNotification('Pomodoro', 'Таймер остановлен');
+                    }
                     break;
                 case 'timer/nextSession':
                     if (isSoundOn) nextSessionSound();
                     toast('Следующая сессия', {
                         icon: '⏳'
                     });
+                    if (isNotificationsOn) {
+                        showNotification('Pomodoro', 'Следующая сессия');
+                    }
                     break;
                 case 'timer/reset':
                     if (isSoundOn) resetSound();
                     toast.error('Таймер сброшен', {
                         icon: '🧹'
                     });
+                    if (isNotificationsOn) {
+                        showNotification('Pomodoro', 'Таймер сброшен');
+                    }
                     break;
                 case 'timer/cycleComplete':
                     if (isSoundOn) completeCycleSound();
                     toast.success('Сеанс завершен', {
                         icon: '🏁'
                     });
+                    if (isNotificationsOn) {
+                        showNotification('Pomodoro', 'Сеанс завершен');
+                    }
                     break;
                 case 'settings/setSettings':
                     if (isSoundOn) buttonSoftSound();

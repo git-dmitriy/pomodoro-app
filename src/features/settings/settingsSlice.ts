@@ -9,6 +9,7 @@ export const settingsSlice = createSlice({
             showTasks: false,
             showSettings: false,
             isSoundOn: true,
+            isNotificationsOn: false,
             timer: {
 
                 timing: {
