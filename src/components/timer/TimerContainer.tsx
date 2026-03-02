@@ -45,7 +45,9 @@ export const TimerContainer = () => {
     );
     const {config} = useAppSelector((state) => state.settings);
 
-    const workerRef = useRef<Worker>(null);
+    const workerRef = useRef<Worker | null>(null);
+    const latestStateRef = useRef({ isRunning, secondsLeft });
+    latestStateRef.current = { isRunning, secondsLeft };
 
     useEffect(() => {
         if (firstRender.current) {
@@ -65,13 +67,14 @@ export const TimerContainer = () => {
                 dispatch(timer.pause());
                 return;
             }
-            if (event.data.message === 'tick' && isRunning) {
-                if (secondsLeft > 0) {
+            if (event.data.message === 'tick') {
+                const { isRunning: running, secondsLeft: left } = latestStateRef.current;
+                if (running && left > 0) {
                     dispatch(timer.tick());
                 }
             }
-        }
-    }, [isRunning, secondsLeft, config, dispatch]);
+        };
+    }, [dispatch]);
 
     const toggleSettings = () => {
         dispatch(settings.openSettings())
