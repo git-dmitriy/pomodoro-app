@@ -45,7 +45,7 @@ export const TasksContainer = () => {
         if (localTasks) {
             dispatch(tasks.loadTasks(localTasks));
         }
-    }, [])
+    }, [dispatch, localTasks]);
 
 
     if (!showTasks) {

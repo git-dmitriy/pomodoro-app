@@ -13,18 +13,20 @@ import {useAppSelector} from "@/hooks/useAppSelector";
 import {getValidatedConfig} from "@/utils/validateConfig";
 
 import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
-import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
+import {ProgressRing} from "@/components/timer/ProgressRing.tsx";
 import {Settings} from "@/components/timer/Settings.tsx";
+import toast from 'react-hot-toast';
 
 let TimerWorker: Worker | null;
 if (typeof window !== 'undefined') {
     TimerWorker = window.Worker
-        ? new Worker(new URL('@/workers/timerWorker.js', import.meta.url))
+        ? new Worker(new URL('../../workers/timerWorker.ts', import.meta.url))
         : null;
 }
 
 interface WorkerMessage {
-    message: 'tick' | 'start' | 'stop';
+    message: 'tick' | 'start' | 'stop' | 'error';
+    error?: ErrorEvent;
 }
 
 
@@ -57,6 +59,12 @@ export const TimerContainer = () => {
         workerRef.current = TimerWorker;
 
         workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
+            if (event.data.message === 'error') {
+                console.error('Timer worker error:', event.data.error);
+                toast.error('Ошибка таймера');
+                dispatch(timer.pause());
+                return;
+            }
             if (event.data.message === 'tick' && isRunning) {
                 if (secondsLeft > 0) {
                     dispatch(timer.tick());

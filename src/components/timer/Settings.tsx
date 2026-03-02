@@ -1,6 +1,7 @@
 import {
     useState,
     useEffect,
+    useCallback,
     ChangeEvent,
     SyntheticEvent,
 } from 'react';
@@ -35,19 +36,21 @@ export const Settings = () => {
     const [sessions, setSessions] = useState(safeConfig.timer.sessions);
     const [sounds, setSounds] = useState(safeConfig.isSoundOn);
 
-    useEffect(() => {
-        document.addEventListener("keyup", handleEscEvent);
+    const closeSettings = useCallback(() => {
+        dispatch(settings.closeSettings());
+    }, [dispatch]);
 
+    useEffect(() => {
+        const handleEscEvent = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeSettings();
+            }
+        };
+        document.addEventListener("keyup", handleEscEvent);
         return () => {
             document.removeEventListener('keyup', handleEscEvent);
-        }
-    }, []);
-
-    const handleEscEvent = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            closeSettings();
-        }
-    }
+        };
+    }, [closeSettings]);
 
     const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
         if (
@@ -91,10 +94,6 @@ export const Settings = () => {
             showTasks: config.showTasks,
             showSettings: false
         }))
-    };
-
-    const closeSettings = () => {
-        dispatch(settings.closeSettings());
     };
 
     function onChangeSounds() {
