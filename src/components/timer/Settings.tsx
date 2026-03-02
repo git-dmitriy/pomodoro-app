@@ -105,7 +105,7 @@ export const Settings = () => {
             <FlexContainer $justifyContent='space-between' $alignItems='center'>
                 <h2>Настройки</h2>
                 <FlexContainer $justifyContent='center' $alignItems='center'>
-                    <Button onClick={onSubmitHandler}>
+                    <Button type="submit">
                         <FaSave/>
                     </Button>
                     <Button onClick={closeSettings}>
@@ -114,7 +114,7 @@ export const Settings = () => {
                 </FlexContainer>
             </FlexContainer>
 
-            <form>
+            <form onSubmit={onSubmitHandler}>
                 <Fieldset legend='Время:'>
                     <InputNumber
                         id='focus'
