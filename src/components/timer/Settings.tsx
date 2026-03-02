@@ -18,6 +18,7 @@ import * as settings from '@/features/settings/settingsSlice';
 import {checkLimits} from "@/utils/checkLimits";
 import {Checkbox} from "@/components/ui/Checkbox.tsx";
 import {Config} from "@/features/settings/types.ts";
+import {validateConfig} from "@/utils/validateConfig";
 
 export const Settings = () => {
     const {config} = useAppSelector((state) => state.settings);
@@ -28,10 +29,11 @@ export const Settings = () => {
     const minTimeLimit = 5;
     const maxTimeLimit = 60;
 
-    const [localConfig] = useLocalStorage<Config>('config', config);
-    const [timing, setTiming] = useState(localConfig.timer.timing);
-    const [sessions, setSessions] = useState(config.timer.sessions);
-    const [sounds, setSounds] = useState(localConfig.isSoundOn);
+    const [rawConfig] = useLocalStorage<Config>('config', config);
+    const safeConfig = validateConfig(rawConfig) ?? config;
+    const [timing, setTiming] = useState(safeConfig.timer.timing);
+    const [sessions, setSessions] = useState(safeConfig.timer.sessions);
+    const [sounds, setSounds] = useState(safeConfig.isSoundOn);
 
     useEffect(() => {
         document.addEventListener("keyup", handleEscEvent);

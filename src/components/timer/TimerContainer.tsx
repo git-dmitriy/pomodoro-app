@@ -7,15 +7,14 @@ import {Controls} from '@/components/timer/Controls';
 import {Button} from '@/components/ui/Button';
 import {Backdrop} from '@/components/ui/Backdrop';
 import {RiSettings4Fill} from 'react-icons/ri';
-import {useLocalStorage} from "@/hooks/useLocalStorage";
 import {createPortal} from "react-dom";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
+import {getValidatedConfig} from "@/utils/validateConfig";
 
 import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
 import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
 import {Settings} from "@/components/timer/Settings.tsx";
-import {Config} from "@/features/settings/types.ts";
 
 let TimerWorker: Worker | null;
 if (typeof window !== 'undefined') {
@@ -45,18 +44,12 @@ export const TimerContainer = () => {
     const {config} = useAppSelector((state) => state.settings);
 
     const workerRef = useRef<Worker>(null);
-    const [localConfig] = useLocalStorage<Config | null>('config', null);
 
     useEffect(() => {
-
         if (firstRender.current) {
-
-            if (localConfig) {
-                dispatch(timer.init(localConfig.timer));
-                dispatch(settings.loadSettings(localConfig))
-            } else {
-                dispatch(timer.init(config.timer))
-            }
+            const validatedConfig = getValidatedConfig();
+            dispatch(timer.init(validatedConfig.timer));
+            dispatch(settings.loadSettings(validatedConfig));
             firstRender.current = false;
         }
 
@@ -70,7 +63,7 @@ export const TimerContainer = () => {
                 }
             }
         }
-    }, [isRunning, secondsLeft, localConfig, config, dispatch]);
+    }, [isRunning, secondsLeft, config, dispatch]);
 
     const toggleSettings = () => {
         dispatch(settings.openSettings())
