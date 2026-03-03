@@ -5,11 +5,16 @@ type StyleWithVars = React.CSSProperties & Record<'--progress', string>;
 
 const Container = styled.article`
     position: relative;
-    padding-inline: var(--unit-4);
+    padding: 2.5rem;
     display: grid;
     gap: var(--unit-2);
     justify-items: center;
     margin: var(--unit-7);
+    aspect-ratio: 1/1;
+
+    @media (max-width: 480px) {
+        transform: scale(.9);
+    }
 
     .progress-ring {
         --progress: 50;
@@ -22,7 +27,7 @@ const Container = styled.article`
         pointer-events: none;
 
         position: absolute;
-        inset: var(--unit--7);
+        inset: 0;
 
         circle {
             cx: var(--half-size);

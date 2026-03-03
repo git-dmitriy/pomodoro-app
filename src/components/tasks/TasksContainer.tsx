@@ -32,6 +32,10 @@ const TaskHeading = styled.h2`
     grid-area: title;
     color: rgba(0, 0, 0, .3);
     font-size: 3rem;
+    
+    @media (max-width: 480px) {
+        font-size: 2rem;
+    }
 `;
 
 export const TasksContainer = () => {
