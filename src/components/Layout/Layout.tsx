@@ -6,7 +6,7 @@ import {RootState} from "@/store";
 import {Toaster} from "react-hot-toast";
 
 const StyledLayout = styled.main<{ $taskShown: boolean }>`
-    //inline-size: 96vw;
+    block-size: 90vh;
     inline-size: 100vw;
     justify-content: center;
     display: grid;
@@ -15,8 +15,13 @@ const StyledLayout = styled.main<{ $taskShown: boolean }>`
     justify-items: center;
     grid-template-columns: ${(props) => props.$taskShown ? 'repeat(auto-fit, minmax(28rem, 1fr))' : '1fr'};
 
-    @media (max-width: 600px) {
+    @supports (block-size: 100dvh) {
+        block-size: 90dvh;
+    }
+
+    @media (max-width: 896px) {
         display: block;
+        block-size: auto;
     }
 `;
 
