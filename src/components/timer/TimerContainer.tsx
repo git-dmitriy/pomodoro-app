@@ -11,6 +11,10 @@ import {createPortal} from "react-dom";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {getValidatedConfig} from "@/utils/validateConfig";
+import {
+    getTimerStateFromStorage,
+    isTimerState,
+} from "@/store/middleware/listeners/timerBroadcastListener";
 
 import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn";
 import {ProgressRing} from "@/components/timer/ProgressRing";
@@ -46,14 +50,25 @@ export const TimerContainer = () => {
     const {config} = useAppSelector((state) => state.settings);
 
     const workerRef = useRef<Worker | null>(null);
-    const latestStateRef = useRef({ isRunning, secondsLeft });
-    latestStateRef.current = { isRunning, secondsLeft };
+    const latestStateRef = useRef({isRunning, secondsLeft});
+    latestStateRef.current = {isRunning, secondsLeft};
 
     useEffect(() => {
         if (firstRender.current) {
             const validatedConfig = getValidatedConfig();
-            dispatch(timer.init(validatedConfig.timer));
             dispatch(settings.loadSettings(validatedConfig));
+
+            const savedState = getTimerStateFromStorage();
+            if (savedState !== null && isTimerState(savedState)) {
+                dispatch(
+                    timer.syncState({
+                        ...savedState,
+                        isRunning: false,
+                    })
+                );
+            } else {
+                dispatch(timer.init(validatedConfig.timer));
+            }
             firstRender.current = false;
         }
 
@@ -68,13 +83,19 @@ export const TimerContainer = () => {
                 return;
             }
             if (event.data.message === 'tick') {
-                const { isRunning: running, secondsLeft: left } = latestStateRef.current;
+                const {isRunning: running, secondsLeft: left} = latestStateRef.current;
                 if (running && left > 0) {
                     dispatch(timer.tick());
                 }
             }
         };
     }, [dispatch]);
+
+    useEffect(() => {
+        if (!isRunning && workerRef.current) {
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
+        }
+    }, [isRunning]);
 
     const toggleSettings = () => {
         dispatch(settings.openSettings())

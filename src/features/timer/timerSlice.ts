@@ -64,13 +64,24 @@ export const timerSlice = createSlice({
             state.isRunning = false;
         },
 
-        cycleComplete: (state, action: PayloadAction<Config >) => {
+        cycleComplete: (state, action: PayloadAction<Config>) => {
             state.secondsLeft = action.payload.timing.focus * 60;
             state.totalSeconds = action.payload.timing.focus * 60;
             state.mode = 'focus';
             state.totalSessions = action.payload.sessions * 2;
             state.currentSession = 1;
             state.isRunning = false;
+        },
+
+        /** Restore timer state from another tab (sync via BroadcastChannel) */
+        syncState: (state, action: PayloadAction<Timer>) => {
+            const p = action.payload;
+            state.secondsLeft = p.secondsLeft;
+            state.totalSeconds = p.totalSeconds;
+            state.mode = p.mode;
+            state.totalSessions = p.totalSessions;
+            state.currentSession = p.currentSession;
+            state.isRunning = p.isRunning;
         },
     },
 });
@@ -83,6 +94,7 @@ export const {
     nextSession,
     reset,
     cycleComplete,
+    syncState,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;
