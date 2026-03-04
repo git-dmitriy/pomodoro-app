@@ -32,8 +32,10 @@ export const TaskListItem = (task: TaskItemType) => {
     };
 
     useEffect(() => {
-        textInputRef.current?.focus();
-    }, [setIsEdit]);
+        if (isEdit) {
+            textInputRef.current?.focus();
+        }
+    }, [isEdit]);
 
     const onBlurHandler = () => {
         if (content.trim() !== task.content) {

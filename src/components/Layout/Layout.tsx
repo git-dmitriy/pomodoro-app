@@ -6,18 +6,22 @@ import {RootState} from "@/store";
 import {Toaster} from "react-hot-toast";
 
 const StyledLayout = styled.main<{ $taskShown: boolean }>`
-    inline-size: 86vw;
-    block-size: 86vh;
+    block-size: 90vh;
+    inline-size: 100vw;
     justify-content: center;
     display: grid;
     align-content: center;
     align-items: center;
     justify-items: center;
-    grid-template-columns: ${(props) => props.$taskShown ? 'repeat(2, 1fr)' : '1fr'};
+    grid-template-columns: ${(props) => props.$taskShown ? 'repeat(auto-fit, minmax(28rem, 1fr))' : '1fr'};
 
     @supports (block-size: 100dvh) {
-        block-size: 86dvh;
-        inline-size: 86dvw;
+        block-size: 90dvh;
+    }
+
+    @media (max-width: 896px) {
+        display: block;
+        block-size: auto;
     }
 `;
 

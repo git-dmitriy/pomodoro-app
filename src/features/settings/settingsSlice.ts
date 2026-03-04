@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Config, SettingsState} from "@/features/settings/types.ts";
+import {Config, SettingsState} from "@/features/settings/types";
 
 
 export const settingsSlice = createSlice({
@@ -9,6 +9,7 @@ export const settingsSlice = createSlice({
             showTasks: false,
             showSettings: false,
             isSoundOn: true,
+            isNotificationsOn: false,
             timer: {
 
                 timing: {

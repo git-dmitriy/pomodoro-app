@@ -1,13 +1,13 @@
 import {RemoveCompletedTasks} from '@/components/tasks/RemoveCompletedTasks';
 import {TasksList} from '@/components/tasks/tasksList';
 import styled from "styled-components";
-import {AddTaskForm} from "@/components/tasks/AddTaskForm.tsx";
+import {AddTaskForm} from "@/components/tasks/AddTaskForm";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
 import {useLocalStorage} from "@/hooks/useLocalStorage";
 import {useEffect} from "react";
 import * as tasks from '@/features/tasks/tasksSlice';
-import {TaskItem} from "@/features/tasks/types.ts";
+import {TaskItem} from "@/features/tasks/types";
 
 const Container = styled.article`
     inline-size: 100%;
@@ -32,6 +32,10 @@ const TaskHeading = styled.h2`
     grid-area: title;
     color: rgba(0, 0, 0, .3);
     font-size: 3rem;
+    
+    @media (max-width: 480px) {
+        font-size: 2rem;
+    }
 `;
 
 export const TasksContainer = () => {
@@ -45,7 +49,7 @@ export const TasksContainer = () => {
         if (localTasks) {
             dispatch(tasks.loadTasks(localTasks));
         }
-    }, [])
+    }, [dispatch, localTasks]);
 
 
     if (!showTasks) {

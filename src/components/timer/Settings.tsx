@@ -1,8 +1,9 @@
 import {
     useState,
     useEffect,
+    useCallback,
+    useRef,
     ChangeEvent,
-    SyntheticEvent,
 } from 'react';
 import {InputNumber} from '@/components/ui/InputNumber';
 import {Button} from '@/components/ui/Button';
@@ -12,40 +13,45 @@ import {Fieldset} from '@/components/ui/Fieldset';
 import {SettingsContainer} from '@/components/ui/SettingsContainer';
 import {FlexContainer} from '@/components/ui/FlexContainer';
 import {useLocalStorage} from "@/hooks/useLocalStorage";
+import {useFocusTrap} from "@/hooks/useFocusTrap";
 import {useAppSelector} from "@/hooks/useAppSelector";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import * as settings from '@/features/settings/settingsSlice';
 import {checkLimits} from "@/utils/checkLimits";
-import {Checkbox} from "@/components/ui/Checkbox.tsx";
-import {Config} from "@/features/settings/types.ts";
+import {Checkbox} from "@/components/ui/Checkbox";
+import {Config} from "@/features/settings/types";
+import {validateConfig, MAX_SESSIONS, MAX_TIME, MIN_SESSIONS, MIN_TIME} from "@/utils/validateConfig";
+import toast from "react-hot-toast";
 
 export const Settings = () => {
     const {config} = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
-    const maxSessionsLimit = 4;
-    const minSessionsLimit = 2;
-    const minTimeLimit = 5;
-    const maxTimeLimit = 60;
+    const [rawConfig] = useLocalStorage<Config>('config', config);
+    const safeConfig = validateConfig(rawConfig) ?? config;
+    const [timing, setTiming] = useState(safeConfig.timer.timing);
+    const [sessions, setSessions] = useState(safeConfig.timer.sessions);
+    const [sounds, setSounds] = useState(safeConfig.isSoundOn);
+    const [notifications, setNotifications] = useState(safeConfig.isNotificationsOn);
 
-    const [localConfig] = useLocalStorage<Config>('config', config);
-    const [timing, setTiming] = useState(localConfig.timer.timing);
-    const [sessions, setSessions] = useState(config.timer.sessions);
-    const [sounds, setSounds] = useState(localConfig.isSoundOn);
+    const closeSettings = useCallback(() => {
+        dispatch(settings.closeSettings());
+    }, [dispatch]);
+
+    const modalRef = useRef<HTMLDivElement>(null);
+    useFocusTrap(modalRef, {initialFocus: true});
 
     useEffect(() => {
+        const handleEscEvent = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeSettings();
+            }
+        };
         document.addEventListener("keyup", handleEscEvent);
-
         return () => {
             document.removeEventListener('keyup', handleEscEvent);
-        }
-    }, []);
-
-    const handleEscEvent = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            closeSettings();
-        }
-    }
+        };
+    }, [closeSettings]);
 
     const onChangeTimingHandler = (e: ChangeEvent<HTMLInputElement>) => {
         if (
@@ -56,8 +62,8 @@ export const Settings = () => {
                 ...timing,
                 [e.target.name]: checkLimits({
                     value: parseInt(e.target.value, 10),
-                    min: minTimeLimit,
-                    max: maxTimeLimit
+                    min: MIN_TIME,
+                    max: MAX_TIME
                 })
             })
         }
@@ -72,35 +78,56 @@ export const Settings = () => {
         ) {
             setSessions(checkLimits({
                 value: parseInt(e.target.value, 10),
-                max: maxSessionsLimit,
-                min: minSessionsLimit,
+                max: MAX_SESSIONS,
+                min: MIN_SESSIONS,
             }));
         }
     };
 
-    const onSubmitHandler = (e: SyntheticEvent) => {
-        e.preventDefault();
+    const onSubmitHandler = async () => {
+
+        let notificationsEnabled = notifications;
+
+        if (notifications) {
+            if (typeof window === 'undefined' || !('Notification' in window)) {
+                toast.error('Браузер не поддерживает системные уведомления');
+                notificationsEnabled = false;
+            } else {
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        toast.error('Уведомления не разрешены в браузере');
+                        notificationsEnabled = false;
+                    }
+                } catch (error) {
+                    console.error('Notification permission error:', error);
+                    notificationsEnabled = false;
+                }
+            }
+        }
+
         dispatch(settings.setSettings({
             timer: {
                 timing,
                 sessions,
             },
             isSoundOn: sounds,
+            isNotificationsOn: notificationsEnabled,
             showTasks: config.showTasks,
             showSettings: false
         }))
-    };
-
-    const closeSettings = () => {
-        dispatch(settings.closeSettings());
     };
 
     function onChangeSounds() {
         setSounds(!sounds);
     }
 
+    function onChangeNotifications() {
+        setNotifications(!notifications);
+    }
+
     return (
-        <SettingsContainer>
+        <SettingsContainer ref={modalRef}>
             <FlexContainer $justifyContent='space-between' $alignItems='center'>
                 <h2>Настройки</h2>
                 <FlexContainer $justifyContent='center' $alignItems='center'>
@@ -113,13 +140,13 @@ export const Settings = () => {
                 </FlexContainer>
             </FlexContainer>
 
-            <form>
+            <form className='overflow-auto h-100'>
                 <Fieldset legend='Время:'>
                     <InputNumber
                         id='focus'
                         name='focus'
-                        min={minTimeLimit}
-                        max={maxTimeLimit}
+                        min={MIN_TIME}
+                        max={MAX_TIME}
                         step={5}
                         label='Фокусировка'
                         value={timing.focus}
@@ -128,8 +155,8 @@ export const Settings = () => {
                     <InputNumber
                         id='break'
                         name='break'
-                        min={minTimeLimit}
-                        max={maxTimeLimit}
+                        min={MIN_TIME}
+                        max={MAX_TIME}
                         step={5}
                         label='Перерыв'
                         value={timing.break}
@@ -138,8 +165,8 @@ export const Settings = () => {
                     <InputNumber
                         id='rest'
                         name='rest'
-                        min={minTimeLimit}
-                        max={maxTimeLimit}
+                        min={MIN_TIME}
+                        max={MAX_TIME}
                         step={5}
                         label='Отдых'
                         value={timing.rest}
@@ -151,8 +178,8 @@ export const Settings = () => {
                     <InputNumber
                         id='sessions'
                         name='sessions'
-                        min={minSessionsLimit}
-                        max={maxSessionsLimit}
+                        min={MIN_SESSIONS}
+                        max={MAX_SESSIONS}
                         step={1}
                         label='Помидорки'
                         value={sessions}
@@ -166,6 +193,15 @@ export const Settings = () => {
                             onClickHandler={onChangeSounds}
                         />
                         <p>Включить звук</p>
+                    </FlexContainer>
+                </Fieldset>
+                <Fieldset legend='Уведомления:'>
+                    <FlexContainer $gap={'var(--unit-2)'}>
+                        <Checkbox
+                            $isChecked={notifications}
+                            onClickHandler={onChangeNotifications}
+                        />
+                        <p>Включить системные уведомления</p>
                     </FlexContainer>
                 </Fieldset>
             </form>

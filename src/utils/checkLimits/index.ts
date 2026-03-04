@@ -1,1 +1,1 @@
-export * from './checkLimits.ts';
+export * from './checkLimits';

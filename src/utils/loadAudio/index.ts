@@ -1,1 +1,1 @@
-export * from './loadAudio.ts';
+export * from './loadAudio';

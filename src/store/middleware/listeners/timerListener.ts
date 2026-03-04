@@ -1,4 +1,4 @@
-import {cycleComplete, nextSession, tick,} from '@/features/timer/timerSlice.ts';
+import {cycleComplete, nextSession, tick,} from '@/features/timer/timerSlice';
 import {appListener} from "@/store";
 
 export function registerTimerListener(middleware: typeof appListener

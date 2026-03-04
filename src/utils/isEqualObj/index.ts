@@ -1,1 +1,1 @@
-export * from './isEqualObj.ts';
+export * from './isEqualObj';

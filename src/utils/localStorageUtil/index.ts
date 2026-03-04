@@ -1,1 +1,1 @@
-export * from './localStorageUtil.ts';
+export * from './localStorageUtil';

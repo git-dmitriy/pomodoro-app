@@ -7,25 +7,30 @@ import {Controls} from '@/components/timer/Controls';
 import {Button} from '@/components/ui/Button';
 import {Backdrop} from '@/components/ui/Backdrop';
 import {RiSettings4Fill} from 'react-icons/ri';
-import {useLocalStorage} from "@/hooks/useLocalStorage";
 import {createPortal} from "react-dom";
 import {useAppDispatch} from "@/hooks/useAppDispatch";
 import {useAppSelector} from "@/hooks/useAppSelector";
+import {getValidatedConfig} from "@/utils/validateConfig";
+import {
+    getTimerStateFromStorage,
+    isTimerState,
+} from "@/store/middleware/listeners/timerBroadcastListener";
 
-import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn.tsx";
-import {ProgressRing} from "@/components/timer/PropgressRing.tsx";
-import {Settings} from "@/components/timer/Settings.tsx";
-import {Config} from "@/features/settings/types.ts";
+import {ShowTasksBtn} from "@/components/tasks/ShowTasksBtn";
+import {ProgressRing} from "@/components/timer/ProgressRing";
+import {Settings} from "@/components/timer/Settings";
+import toast from 'react-hot-toast';
 
 let TimerWorker: Worker | null;
 if (typeof window !== 'undefined') {
     TimerWorker = window.Worker
-        ? new Worker(new URL('@/workers/timerWorker.js', import.meta.url))
+        ? new Worker(new URL('../../workers/timerWorker.ts', import.meta.url))
         : null;
 }
 
 interface WorkerMessage {
-    message: 'tick' | 'start' | 'stop';
+    message: 'tick' | 'start' | 'stop' | 'error';
+    error?: ErrorEvent;
 }
 
 
@@ -44,18 +49,25 @@ export const TimerContainer = () => {
     );
     const {config} = useAppSelector((state) => state.settings);
 
-    const workerRef = useRef<Worker>(null);
-    const [localConfig] = useLocalStorage<Config | null>('config', null);
+    const workerRef = useRef<Worker | null>(null);
+    const latestStateRef = useRef({isRunning, secondsLeft});
+    latestStateRef.current = {isRunning, secondsLeft};
 
     useEffect(() => {
-
         if (firstRender.current) {
+            const validatedConfig = getValidatedConfig();
+            dispatch(settings.loadSettings(validatedConfig));
 
-            if (localConfig) {
-                dispatch(timer.init(localConfig.timer));
-                dispatch(settings.loadSettings(localConfig))
+            const savedState = getTimerStateFromStorage();
+            if (savedState !== null && isTimerState(savedState)) {
+                dispatch(
+                    timer.syncState({
+                        ...savedState,
+                        isRunning: false,
+                    })
+                );
             } else {
-                dispatch(timer.init(config.timer))
+                dispatch(timer.init(validatedConfig.timer));
             }
             firstRender.current = false;
         }
@@ -64,13 +76,26 @@ export const TimerContainer = () => {
         workerRef.current = TimerWorker;
 
         workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
-            if (event.data.message === 'tick' && isRunning) {
-                if (secondsLeft > 0) {
+            if (event.data.message === 'error') {
+                console.error('Timer worker error:', event.data.error);
+                toast.error('Ошибка таймера');
+                dispatch(timer.pause());
+                return;
+            }
+            if (event.data.message === 'tick') {
+                const {isRunning: running, secondsLeft: left} = latestStateRef.current;
+                if (running && left > 0) {
                     dispatch(timer.tick());
                 }
             }
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!isRunning && workerRef.current) {
+            workerRef.current.postMessage({message: 'stop'} as WorkerMessage);
         }
-    }, [isRunning, secondsLeft, localConfig, config, dispatch]);
+    }, [isRunning]);
 
     const toggleSettings = () => {
         dispatch(settings.openSettings())
