@@ -20,9 +20,8 @@ import * as settings from '@/features/settings/settingsSlice';
 import {checkLimits} from "@/utils/checkLimits";
 import {Checkbox} from "@/components/ui/Checkbox";
 import {Config} from "@/features/settings/types";
-import {validateConfig} from "@/utils/validateConfig";
+import {validateConfig, MAX_SESSIONS, MAX_TIME, MIN_SESSIONS, MIN_TIME} from "@/utils/validateConfig";
 import toast from "react-hot-toast";
-import {MAX_SESSIONS, MAX_TIME, MIN_SESSIONS, MIN_TIME} from "@/utils/validateConfig/validateConfig.ts";
 
 export const Settings = () => {
     const {config} = useAppSelector((state) => state.settings);
