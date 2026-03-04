@@ -51,7 +51,10 @@ export const TimerContainer = () => {
 
     const workerRef = useRef<Worker | null>(null);
     const latestStateRef = useRef({isRunning, secondsLeft});
-    latestStateRef.current = {isRunning, secondsLeft};
+
+    useEffect(() => {
+        latestStateRef.current = {isRunning, secondsLeft};
+    }, [isRunning, secondsLeft]);
 
     useEffect(() => {
         if (firstRender.current) {

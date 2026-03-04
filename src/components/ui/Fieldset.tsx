@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledFieldset = styled.fieldset`
+const StyledFieldset = styled.fieldset`
     display: block;
     position: relative;
     border: none;

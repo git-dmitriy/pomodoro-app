@@ -22,7 +22,10 @@ export function StorageSync() {
     const dispatch = useAppDispatch();
     const currentTimerConfig = useAppSelector((state) => state.settings.config.timer);
     const timerConfigRef = useRef<TimerConfig>(currentTimerConfig);
-    timerConfigRef.current = currentTimerConfig;
+
+    useEffect(() => {
+        timerConfigRef.current = currentTimerConfig;
+    }, [currentTimerConfig]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
