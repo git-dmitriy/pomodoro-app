@@ -1,54 +1,46 @@
-# React + TypeScript + Vite
+# Pomodoro Timer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web app for working in Pomodoro intervals with a timer and task list. You can run the timer with focus, short break, and long rest phases, set durations and the number of sessions per cycle, and manage tasks: add, edit, complete, and remove finished ones. It includes sound alerts and system notifications for session changes and cycle completion. Settings and tasks are validated and stored in `localStorage`; the app can be installed as a PWA, used offline, and stays in sync across tabs (config, tasks, and timer state). If all tabs were closed while the timer was running, reopening the app restores the last time and session but shows the timer as paused.
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** + **TypeScript** + **Vite 6**
+- **Redux Toolkit** (slices + listener middleware)
+- **styled-components**, **react-hot-toast**, **react-icons**
+- **PWA**: vite-plugin-pwa (Workbox), service worker, web app manifest
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.store.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Development server
+npm run dev
+
+# Lint
+npm run lint
+
+# Production build
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Script    | Description                    |
+| --------- | ------------------------------ |
+| `npm run dev`    | Start dev server (default: http://localhost:5173) |
+| `npm run build`  | Type-check and build for production                |
+| `npm run lint`   | Run ESLint                                       |
+| `npm run preview`| Serve the production build locally                |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Features
+
+- **Timer**: focus / short break / long rest; configurable durations (5–60 min) and sessions per cycle (2–4); circular progress; tick driven by a Web Worker
+- **Tasks**: add, edit, complete, remove; remove all completed; toggle task panel
+- **Settings**: time per phase, sessions count, sound on/off, system notifications; validation and safe defaults
+- **Sync**: config and tasks sync via `localStorage` storage events; timer state syncs via BroadcastChannel; new tabs restore timer from storage (paused)
+- **PWA**: installable, offline support, precached assets
